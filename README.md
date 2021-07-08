@@ -6,14 +6,14 @@
 
 #### TODO
 
-
 **Please cite these publication if you use output from this app or the associated data.**
 
 ## Development
 
 ### Prequisites
-* [node.js 16+](https://nodejs.org/en/)
-  * Run `npm install` in your terminal to install node dependencies before running the commands below. 
+
+- [node.js 16+](https://nodejs.org/en/)
+  - Run `npm install` in your terminal to install node dependencies before running the commands below.
 
 In the project directory, you can then run:
 
@@ -40,6 +40,6 @@ Your app is ready to be deployed!
 
 ### Deployment: `npm run deploy`
 
-Build the app and push the built app to the `gh-pages` branch. Will be deployed via GitHub pages to https://globalwetlands.github.io/mangrove-carbon-app/
+Build the app and push the built app to the `gh-pages` branch. Will be deployed via GitHub pages to https://globalwetlands.github.io/glowdex-app/
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
