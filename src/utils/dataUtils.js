@@ -1,7 +1,11 @@
 import { saveAs } from 'file-saver'
 import { parseAsync } from 'json2csv'
-
-export const fetcher = (...args) => fetch(...args).then(res => res.json())
+import Papa from 'papaparse'
+export const fetcher = (...args) => fetch(...args).then((res) => res.json())
+export const fetcherCsv = (...args) =>
+  fetch(...args)
+    .then((res) => res.text())
+    .then((csvString) => parseCsv({ csvString }))
 
 export const loadGeojson = async ({
   name = 'grid', // country, aoi, wdpa
@@ -21,7 +25,6 @@ export const loadSingleLocationData = async (locationID) => {
   return data
 }
 
-
 export async function exportCsv({
   data,
   filename = `${new Date()}.csv`,
@@ -30,4 +33,9 @@ export async function exportCsv({
   const csv = await parseAsync(data, options)
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
   saveAs(blob, filename)
+}
+
+export async function parseCsv({ csvString }) {
+  const { data } = Papa.parse(csvString, { header: true })
+  return data
 }

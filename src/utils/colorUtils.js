@@ -1,9 +1,15 @@
 import chroma from 'chroma-js'
 
-export const getBrewerColours = (scaleName = 'Set2', num = 5) => {
-  return chroma.scale(scaleName).colors(num)
+export function getBrewerColors({ scaleName = 'Set2', alpha = 1 } = {}) {
+  let scale = chroma.brewer?.[scaleName]
+
+  if (alpha < 1) {
+    scale = scale.map((color) => opacify({ color, alpha }))
+  }
+
+  return scale
 }
 
-export const opacify = (col, alpha) => {
-  return chroma(col).alpha(alpha)
+export function opacify({ color, alpha }) {
+  return chroma(color).alpha(alpha).css()
 }

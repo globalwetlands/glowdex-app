@@ -30,6 +30,7 @@
 
 .Map--Tooltip--Value {
   font-weight: 600;
+  margin-left: 10px;
 }
 
 .Map--Overlays {

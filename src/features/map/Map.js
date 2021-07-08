@@ -1,6 +1,5 @@
 import './Map.css'
 
-import _ from 'lodash'
 import { useCallback, useRef, useState } from 'react'
 import {
   FlyToInterpolator,
@@ -16,7 +15,7 @@ import bbox from '@turf/bbox'
 
 import { Spinner } from '../../common/Spinner'
 import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
-import { useMapFeatures } from '../../utils/dataHooks'
+import { useMapData } from '../../utils/dataHooks'
 import MapLegend from './MapLegend'
 import { Menu } from './Menu'
 import { gridLayerStyle } from './mapStyles'
@@ -39,7 +38,9 @@ export function Map() {
   })
 
   const [tooltip, setTooltip] = useState({})
-  const { mapFeatures, isLoading } = useMapFeatures()
+  const { mapFeatures, clusterItems, isLoading } = useMapData({
+    numberOfClusters: 5,
+  })
 
   const fitBounds = useCallback(
     (feature) => {
@@ -109,13 +110,19 @@ export function Map() {
     }
 
     const id = hoveredFeature.properties?.ID
+    const cluster = hoveredFeature.properties?.cluster
     const name = `${id}`
 
     return (
       hoveredFeature && (
         <div className="Map--Tooltip" style={{ left: x, top: y }}>
           <div>
+            <span>ID</span>
             <span className="Map--Tooltip--Value">{name}</span>
+          </div>
+          <div>
+            <span>Cluster</span>
+            <span className="Map--Tooltip--Value">{cluster}</span>
           </div>
         </div>
       )
