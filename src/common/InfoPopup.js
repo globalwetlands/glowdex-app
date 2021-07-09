@@ -1,14 +1,14 @@
 import './InfoPopup.css'
 
 import { Fragment, useState } from 'react'
+import { X as CloseIcon } from 'react-feather'
 import InfoIcon from 'react-feather/dist/icons/info'
-import CloseIcon from 'react-feather/dist/icons/x'
 import Modal from 'react-modal'
 
 import IconButton from './IconButton'
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
-Modal.setAppElement(`#root`)
+Modal.setAppElement(`body`)
 
 export function InfoPopup({ content, title, className = '' }) {
   const [modalIsOpen, setIsOpen] = useState(false)

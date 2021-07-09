@@ -145,7 +145,7 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
   }
 
   return (
-    <div className="Map">
+    <div className="Map" data-testid="Map">
       <MapGL
         {...viewport}
         width="100%"

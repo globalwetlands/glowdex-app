@@ -1,12 +1,12 @@
 import './Popup.css'
 
-import CloseIcon from 'react-feather/dist/icons/x'
+import { X as CloseIcon } from 'react-feather'
 import Modal from 'react-modal'
 
 import { IconButton } from './IconButton'
 
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
-Modal.setAppElement(`#root`)
+Modal.setAppElement(`body`)
 
 export function Popup({ title, modalIsOpen, setModalIsOpen, children }) {
   function afterOpenModal() {}

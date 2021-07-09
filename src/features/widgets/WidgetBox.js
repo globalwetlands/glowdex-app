@@ -1,4 +1,4 @@
-import CloseIcon from 'react-feather/dist/icons/x'
+import { X as CloseIcon } from 'react-feather'
 
 import { IconButton } from '../../common/IconButton'
 
