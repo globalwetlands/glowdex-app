@@ -2,7 +2,7 @@
   font-size: 12px;
   display: flex;
   flex-direction: column;
-  pointer-events: none;
+  padding: 15px;
 }
 
 .MapLegend--Title {

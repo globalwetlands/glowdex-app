@@ -15,13 +15,12 @@ import bbox from '@turf/bbox'
 import { Spinner } from '../../common/Spinner'
 import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
 import { setSelectedGridItems } from '../../redux/gridItemsSlice'
-import { useMapData } from '../../utils/dataHooks'
 import { getBboxCenter } from '../../utils/mapUtils'
 import { MapLegend } from './MapLegend'
 import { Menu } from './Menu'
 import { gridLayerStyle } from './mapStyles'
 
-export function Map() {
+export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
   const mapboxApiAccessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
   const mapStyle =
     'mapbox://styles/ejinks-gu/ckhycntp61ol31am7qum156sk?optimize=true'
@@ -39,10 +38,6 @@ export function Map() {
   })
 
   const [tooltip, setTooltip] = useState({})
-
-  const { mapFeatures, gridItemData, clusters, isLoading } = useMapData({
-    numberOfClusters: 5,
-  })
 
   const fitBounds = useCallback(
     (feature) => {
@@ -78,7 +73,7 @@ export function Map() {
       srcEvent: { offsetX, offsetY },
     } = e
     const hoveredFeature =
-      features && features.find((f) => f.layer.id === 'data')
+      features && features.find((f) => f.layer.id === gridLayerStyle.id)
 
     setTooltip({
       hoveredFeature,
@@ -94,7 +89,7 @@ export function Map() {
   const onClick = (e) => {
     const { features } = e
     const clickedFeature =
-      features && features.find((f) => f.layer.id === 'data')
+      features && features.find((f) => f.layer.id === gridLayerStyle.id)
     if (clickedFeature) {
       const { ID } = clickedFeature.properties
       fitBounds(clickedFeature)

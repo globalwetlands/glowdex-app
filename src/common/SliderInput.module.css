@@ -1,0 +1,20 @@
+.SliderInput {
+  --color: currentColor;
+}
+
+.SliderInput[data-reach-slider-input] {
+  height: 0.2em;
+}
+
+.SliderInput :global([data-reach-slider-range]) {
+  background-color: var(--color);
+}
+
+.SliderInput :global([data-reach-slider-track]) {
+  background-color: var(--color-light-grey);
+}
+
+.SliderInput :global([data-reach-slider-handle]) {
+  background-color: var(--color-background);
+  border: 2px solid var(--color);
+}

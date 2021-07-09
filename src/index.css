@@ -1,16 +1,45 @@
+:root {
+  /* Colours */
+  --blue: #0070f3;
+  --green: #50e597;
+  --red: #ff3d3d;
+  --orange: #ffa500;
+  --cyan: #00c3ff;
+  --white: #ffffff;
+  --off-white: #cacaca;
+  --light-grey: #f5f5f5;
+  --mid-grey: #dbdbdb;
+  --black: #181818;
+  --light-black: #282c34;
+  --dark-grey: #494e57;
+
+  --color-highlight: var(--blue);
+  --color-highlight-b: var(--red);
+  --color-highlight-c: var(--orange);
+  --color-light-grey: var(--light-grey);
+  --color-mid-grey: var(--mid-grey);
+  --color-background: var(--white);
+  --color-code: var(--light-black);
+
+  /* Typography */
+  /* --font-code: 'Fira Code', monospace; */
+  --font-system: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  --font-mono: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Mono',
+    'Droid Sans Mono', 'Source Code Pro', monospace;
+}
+
 body {
   margin: 0;
-  font-family: Open Sans, -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
+  font-family: var(--font-system);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: rgba(0, 0, 0, 0.85);
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: var(--font-mono);
 }
 
 pre {

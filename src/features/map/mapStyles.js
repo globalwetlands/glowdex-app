@@ -1,14 +1,9 @@
 export const gridLayerStyle = {
-  id: 'data',
+  id: 'gridItems',
   type: 'fill',
   paint: {
     'fill-opacity': 1,
     'fill-outline-color': ['get', 'color'],
-    'fill-color': [
-      'case',
-      ['boolean', ['feature-state', 'hover'], false],
-      ['get', 'color'],
-      ['get', 'fillColor'],
-    ],
+    'fill-color': ['get', 'fillColor'],
   },
 }

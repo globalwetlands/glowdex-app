@@ -1,12 +1,36 @@
 import './MapLegend.css'
 
+import { useDispatch, useSelector } from 'react-redux'
+
+import { SliderInput } from '../../common/SliderInput'
+import { setNumberOfClusters } from '../../redux/globalSettingsSlice'
+
 export function MapLegend({ clusters }) {
+  const dispatch = useDispatch()
+  const numberOfClusters = useSelector(
+    (state) => state.globalSettings.numberOfClusters
+  )
+
   return (
     <div className="Map--Overlays--Box MapLegend">
-      <h4 className="MapLegend--Title">
-        Typology
-        <br />
-      </h4>
+      <fieldset className="field">
+        <label className="label" style={{ marginBottom: 18 }}>
+          Number of Clusters: <span className="tag">{numberOfClusters}</span>
+        </label>
+        <div className="control">
+          <SliderInput
+            min={2}
+            max={10}
+            step={1}
+            value={numberOfClusters}
+            onChange={(value) => {
+              dispatch(setNumberOfClusters(value))
+            }}
+            aria-label="Number of Clusters"
+          />
+        </div>
+      </fieldset>
+
       <div className="MapLegend--Display">
         {clusters.map((cluster) => {
           return (
