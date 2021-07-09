@@ -31,7 +31,10 @@ const createPersistedReducer = ({ key, reducer, config = {} }) => {
 }
 
 const rootReducer = combineReducers({
-  globalSettings: globalSettingsSlice,
+  globalSettings: createPersistedReducer({
+    reducer: globalSettingsSlice,
+    key: 'globalSettings',
+  }),
   gridItems: gridItemsSlice,
 })
 
