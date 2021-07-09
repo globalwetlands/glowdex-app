@@ -1,4 +1,4 @@
-import _ from 'lodash'
+import _, { slice } from 'lodash'
 import { useMemo } from 'react'
 import useSWR from 'swr'
 
@@ -16,28 +16,39 @@ function getClusterItems({ numberOfClusters, allClusters }) {
   return groupedByClusterN?.[numberOfClusters]
 }
 
-function generateMapFeatures({ mapFeatures, clusterItems }) {
-  const colors = getBrewerColors()
-  const fillColors = getBrewerColors({ alpha: 0.4 })
-
+function generateMapFeatures({ mapFeatures, clusterItems, clusters }) {
   function addFeatureProps(feature) {
-    const matchingCluster = clusterItems.find(
+    // Add cluster item props to feature
+    const matchingClusterItem = clusterItems.find(
       ({ ID }) => ID === feature.properties.ID
     )
-    const cluster = matchingCluster?.cluster
-    const color = colors[(cluster - 1) % colors.length]
-    const fillcolor = fillColors[(cluster - 1) % colors.length]
+    const cluster = clusters.find(({ n }) => n === matchingClusterItem?.cluster)
+
+    const { color, fillColor, n } = cluster
 
     feature.properties = {
       ...feature.properties,
-      cluster,
+      clusterNumber: n,
       color,
-      fillcolor,
+      fillColor,
     }
     return feature
   }
 
   return mapFeatures.map(addFeatureProps)
+}
+
+function generateClusters({ numberOfClusters }) {
+  const colors = getBrewerColors()
+  const fillColors = getBrewerColors({ alpha: 0.4 })
+
+  const clusters = _.range(1, numberOfClusters + 1).map((n) => {
+    const color = colors[(n - 1) % colors.length]
+    const fillColor = fillColors[(n - 1) % colors.length]
+    return { n, color, fillColor }
+  })
+
+  return clusters
 }
 
 export function useMapData({ numberOfClusters = 2 } = {}) {
@@ -49,8 +60,17 @@ export function useMapData({ numberOfClusters = 2 } = {}) {
     `${process.env.PUBLIC_URL}/data/all-clusters.csv`,
     fetcherCsv
   )
+  const { data: gridItemData } = useSWR(
+    `${process.env.PUBLIC_URL}/data/grid-items.csv`,
+    fetcherCsv
+  )
 
   const isLoading = !gridGeojson || !allClusters
+
+  const clusters = useMemo(
+    () => generateClusters({ numberOfClusters }),
+    [numberOfClusters]
+  )
 
   const clusterItems = useMemo(() => {
     if (allClusters?.length) {
@@ -63,18 +83,25 @@ export function useMapData({ numberOfClusters = 2 } = {}) {
   }, [allClusters, numberOfClusters])
 
   const mapFeatures = useMemo(() => {
-    if (gridGeojson?.features && !!clusterItems?.length) {
-      return generateMapFeatures({
+    if (gridGeojson?.features && clusterItems?.length) {
+      console.time('generateMapFeatures')
+      const mapFeatures = generateMapFeatures({
         clusterItems,
+        clusters,
         mapFeatures: gridGeojson?.features,
       })
+
+      console.timeEnd('generateMapFeatures')
+      return mapFeatures
     }
-  }, [clusterItems, gridGeojson?.features])
+  }, [clusterItems, clusters, gridGeojson?.features])
 
   return {
     mapFeatures,
     allClusters,
+    clusters,
     clusterItems,
+    gridItemData,
     isLoading,
   }
 }

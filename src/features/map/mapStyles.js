@@ -4,6 +4,11 @@ export const gridLayerStyle = {
   paint: {
     'fill-opacity': 1,
     'fill-outline-color': ['get', 'color'],
-    'fill-color': ['get', 'fillcolor'],
+    'fill-color': [
+      'case',
+      ['boolean', ['feature-state', 'hover'], false],
+      ['get', 'color'],
+      ['get', 'fillColor'],
+    ],
   },
 }

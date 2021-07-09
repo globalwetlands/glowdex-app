@@ -7,7 +7,6 @@ import {
   InteractiveMap as MapGL,
   NavigationControl,
   Source,
-  WebMercatorViewport,
 } from 'react-map-gl'
 import { useDispatch } from 'react-redux'
 
@@ -16,7 +15,8 @@ import bbox from '@turf/bbox'
 import { Spinner } from '../../common/Spinner'
 import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
 import { useMapData } from '../../utils/dataHooks'
-import MapLegend from './MapLegend'
+import { getBboxCenter } from '../../utils/mapUtils'
+import { MapLegend } from './MapLegend'
 import { Menu } from './Menu'
 import { gridLayerStyle } from './mapStyles'
 
@@ -38,7 +38,8 @@ export function Map() {
   })
 
   const [tooltip, setTooltip] = useState({})
-  const { mapFeatures, clusterItems, isLoading } = useMapData({
+
+  const { mapFeatures, gridItemData, clusters, isLoading } = useMapData({
     numberOfClusters: 5,
   })
 
@@ -46,25 +47,22 @@ export function Map() {
     (feature) => {
       // calculate the bounding box of the feature
       const [minLng, minLat, maxLng, maxLat] = bbox(feature)
+      const { longitude, latitude } = getBboxCenter({
+        minLng,
+        minLat,
+        maxLng,
+        maxLat,
+      })
 
-      const { longitude, latitude, zoom } = new WebMercatorViewport(
-        viewport
-      ).fitBounds(
-        [
-          [minLng, minLat],
-          [maxLng, maxLat],
-        ],
-        {
-          padding: { top: 100, bottom: 200, right: 100, left: 100 },
-          offset: [0, 0],
-        }
-      )
+      const zoom = 5
+      const duration = 500
+
       const updatedViewport = {
         ...viewport,
         longitude,
         latitude,
         zoom,
-        transitionDuration: 1000,
+        transitionDuration: duration,
         transitionInterpolator: new FlyToInterpolator(),
         // transitionEasing: d3.easeCubic,
       }
@@ -110,8 +108,10 @@ export function Map() {
     }
 
     const id = hoveredFeature.properties?.ID
-    const cluster = hoveredFeature.properties?.cluster
+    const clusterNumber = hoveredFeature.properties?.clusterNumber
     const name = `${id}`
+
+    const gridItem = gridItemData.find((item) => parseInt(item.ID) === id)
 
     return (
       hoveredFeature && (
@@ -122,7 +122,11 @@ export function Map() {
           </div>
           <div>
             <span>Cluster</span>
-            <span className="Map--Tooltip--Value">{cluster}</span>
+            <span className="Map--Tooltip--Value">{clusterNumber}</span>
+          </div>
+          <div>
+            <span>Country</span>
+            <span className="Map--Tooltip--Value">{gridItem?.TERRITORY1}</span>
           </div>
         </div>
       )
@@ -162,19 +166,21 @@ export function Map() {
           onViewportChange={setViewport}
         />
 
-        <Source
-          type="geojson"
-          data={{ type: 'FeatureCollection', features: mapFeatures }}
-        >
-          <Layer {...gridLayerStyle} />
-        </Source>
+        {!isLoading && (
+          <Source
+            type="geojson"
+            data={{ type: 'FeatureCollection', features: mapFeatures }}
+          >
+            <Layer {...gridLayerStyle} />
+          </Source>
+        )}
 
         {renderTooltip()}
       </MapGL>
 
       <div className="Map--Overlays">
         <Menu />
-        {/* {!isLoading  && <MapLegend />} */}
+        {!isLoading && <MapLegend clusters={clusters} />}
       </div>
 
       {isLoading && (

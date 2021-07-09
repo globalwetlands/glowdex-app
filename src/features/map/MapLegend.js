@@ -1,14 +1,31 @@
 import './MapLegend.css'
 
-export function MapLegend() {
+export function MapLegend({ clusters }) {
   return (
     <div className="Map--Overlays--Box MapLegend">
       <h4 className="MapLegend--Title">
-        Name
+        Typology
         <br />
-        <span className="MapLegend--Unit">(unit)</span>
       </h4>
-      <div className="MapLegend--Display"></div>
+      <div className="MapLegend--Display">
+        {clusters.map((cluster) => {
+          return (
+            <div
+              className="MapLegend--ColourStop"
+              key={`ColourStop-${cluster.n}`}
+            >
+              <div
+                className="MapLegend--ColourBox"
+                style={{
+                  borderColor: cluster.color,
+                  backgroundColor: cluster.fillColor,
+                }}
+              />
+              <span className="MapLegend--Value">{cluster.n}</span>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
