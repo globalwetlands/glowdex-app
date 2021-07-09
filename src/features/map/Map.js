@@ -14,6 +14,7 @@ import bbox from '@turf/bbox'
 
 import { Spinner } from '../../common/Spinner'
 import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
+import { setSelectedGridItems } from '../../redux/gridItemsSlice'
 import { useMapData } from '../../utils/dataHooks'
 import { getBboxCenter } from '../../utils/mapUtils'
 import { MapLegend } from './MapLegend'
@@ -95,7 +96,9 @@ export function Map() {
     const clickedFeature =
       features && features.find((f) => f.layer.id === 'data')
     if (clickedFeature) {
+      const { ID } = clickedFeature.properties
       fitBounds(clickedFeature)
+      dispatch(setSelectedGridItems([ID]))
       dispatch(hideMenuHelpText())
     }
   }

@@ -1,5 +1,6 @@
 import _, { slice } from 'lodash'
 import { useMemo } from 'react'
+import { useSelector } from 'react-redux'
 import useSWR from 'swr'
 
 import { getBrewerColors } from './colorUtils'
@@ -104,4 +105,34 @@ export function useMapData({ numberOfClusters = 2 } = {}) {
     gridItemData,
     isLoading,
   }
+}
+
+export function useSelectedGridItemData() {
+  // Returns the selected grid item data
+  const { gridItemData, mapFeatures } = useMapData()
+  const selectedGridItems = useSelector(
+    (state) => state.gridItems.selectedGridItems
+  )
+
+  const selectedGridItemData = useMemo(() => {
+    if (selectedGridItems?.length && gridItemData?.length) {
+      // for each selected ID, get the data for that ID
+      const selectedGridItemsData = selectedGridItems.map((selectedID) => {
+        // Find grid item data by ID
+        const gridItem = gridItemData.find(
+          ({ ID }) => selectedID === parseInt(ID)
+        )
+        // Find map feature props by ID
+        const featureProps =
+          mapFeatures.find((feature) => feature.properties.ID === selectedID)
+            ?.properties || {}
+
+        return { ...gridItem, ...featureProps }
+      })
+      return selectedGridItemsData
+    } else {
+      return []
+    }
+  }, [selectedGridItems, gridItemData, mapFeatures])
+  return { selectedGridItemData }
 }
