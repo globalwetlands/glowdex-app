@@ -1,6 +1,6 @@
 import './Map.css'
 
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 import {
   FlyToInterpolator,
   Layer,
@@ -8,7 +8,7 @@ import {
   NavigationControl,
   Source,
 } from 'react-map-gl'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
 import bbox from '@turf/bbox'
 
@@ -18,7 +18,11 @@ import { setSelectedGridItems } from '../../redux/gridItemsSlice'
 import { getBboxCenter } from '../../utils/mapUtils'
 import { MapLegend } from './MapLegend'
 import { Menu } from './Menu'
-import { gridLayerStyle } from './mapStyles'
+import {
+  gridLayerHoverStyle,
+  gridLayerSelectedStyle,
+  gridLayerStyle,
+} from './mapStyles'
 
 export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
   const mapboxApiAccessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
@@ -27,6 +31,9 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
   const mapRef = useRef()
 
   const dispatch = useDispatch()
+  const selectedGridItems = useSelector(
+    (state) => state.gridItems.selectedGridItems
+  )
 
   const [viewport, setViewport] = useState({
     // width: 400,
@@ -37,7 +44,7 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
     minZoom: 2,
   })
 
-  const [tooltip, setTooltip] = useState({})
+  const [hoveredFeature, setHoveredFeature] = useState({})
 
   const fitBounds = useCallback(
     (feature) => {
@@ -75,15 +82,15 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
     const hoveredFeature =
       features && features.find((f) => f.layer.id === gridLayerStyle.id)
 
-    setTooltip({
-      hoveredFeature,
+    setHoveredFeature({
+      feature: hoveredFeature,
       x: offsetX,
       y: offsetY,
     })
   }
 
   const onMouseOut = () => {
-    setTooltip({})
+    setHoveredFeature({})
   }
 
   const onClick = (e) => {
@@ -99,20 +106,20 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
   }
 
   const renderTooltip = () => {
-    const { hoveredFeature, x, y } = tooltip
+    const { feature, x, y } = hoveredFeature
 
-    if (!hoveredFeature) {
+    if (!feature) {
       return null
     }
 
-    const id = hoveredFeature.properties?.ID
-    const clusterNumber = hoveredFeature.properties?.clusterNumber
+    const id = feature.properties?.ID
+    const clusterNumber = feature.properties?.clusterNumber
     const name = `${id}`
 
     const gridItem = gridItemData.find((item) => parseInt(item.ID) === id)
 
     return (
-      hoveredFeature && (
+      feature && (
         <div className="Map--Tooltip" style={{ left: x, top: y }}>
           <div>
             <span>ID</span>
@@ -138,11 +145,21 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
     if (e?.isDragging) {
       return 'grabbing'
     }
-    if (tooltip?.hoveredFeature) {
+    if (hoveredFeature?.feature) {
       return 'crosshair'
     }
     return 'grab'
   }
+
+  const hoveredFeatureFilter = useMemo(() => {
+    // A filter that matches the hovered feature by ID
+    return ['==', 'ID', hoveredFeature?.feature?.properties?.ID || false]
+  }, [hoveredFeature])
+
+  const selectedFeatureFilter = useMemo(() => {
+    // A filter that matches the selected features by ID
+    return ['in', ['get', 'ID'], ['literal', selectedGridItems]]
+  }, [selectedGridItems])
 
   return (
     <div className="Map" data-testid="Map">
@@ -170,6 +187,8 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
             data={{ type: 'FeatureCollection', features: mapFeatures }}
           >
             <Layer {...gridLayerStyle} />
+            <Layer {...gridLayerHoverStyle} filter={hoveredFeatureFilter} />
+            <Layer {...gridLayerSelectedStyle} filter={selectedFeatureFilter} />
           </Source>
         )}
 
