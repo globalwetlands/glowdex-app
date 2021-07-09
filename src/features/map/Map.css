@@ -56,3 +56,7 @@
 .Map--Overlays > * + * {
   margin-top: 15px;
 }
+
+.mapboxgl-ctrl-attrib-button {
+  display: none;
+}
