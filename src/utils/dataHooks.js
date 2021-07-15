@@ -151,6 +151,19 @@ export function useMapData() {
     return gridLayerStyle
   }, [clusters])
 
+  const gridItemsPerCluster = useMemo(() => {
+    if (gridItemData && clusterItems) {
+      console.time('gridItemsPerCluster')
+      const gridItemsPerCluster = _.groupBy(gridItemData, ({ ID }) => {
+        return clusterItems?.[parseInt(ID)]?.cluster
+      })
+      console.timeEnd('gridItemsPerCluster')
+      return gridItemsPerCluster
+    } else {
+      return undefined
+    }
+  }, [clusterItems, gridItemData])
+
   return {
     mapFeatures,
     allClusters,
@@ -159,6 +172,7 @@ export function useMapData() {
     gridItemData,
     isLoading,
     gridLayerStyle,
+    gridItemsPerCluster,
   }
 }
 
