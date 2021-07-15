@@ -104,6 +104,26 @@ export function useMapData() {
     `${process.env.PUBLIC_URL}/data/grid-items.csv`,
     fetcherCsv
   )
+  const { data: gridItemResidualsData } = useSWR(
+    `${process.env.PUBLIC_URL}/data/grid-items-residuals.csv`,
+    fetcherCsv
+  )
+
+  const gridItems = useMemo(() => {
+    if (gridItemData && gridItemResidualsData) {
+      return gridItemData.map((gridItem) => {
+        const residuals = gridItemResidualsData.find(
+          ({ ID }) => ID === gridItem.ID
+        )
+        return {
+          ...gridItem,
+          residuals,
+        }
+      })
+    } else {
+      return []
+    }
+  }, [gridItemData, gridItemResidualsData])
 
   const isLoading = useMemo(
     () => !gridGeojson || !allClusters,
@@ -152,9 +172,9 @@ export function useMapData() {
   }, [clusters])
 
   const gridItemsPerCluster = useMemo(() => {
-    if (gridItemData && clusterItems) {
+    if (gridItems && clusterItems) {
       console.time('gridItemsPerCluster')
-      const gridItemsPerCluster = _.groupBy(gridItemData, ({ ID }) => {
+      const gridItemsPerCluster = _.groupBy(gridItems, ({ ID }) => {
         return clusterItems?.[parseInt(ID)]?.cluster
       })
       console.timeEnd('gridItemsPerCluster')
@@ -162,21 +182,21 @@ export function useMapData() {
     } else {
       return undefined
     }
-  }, [clusterItems, gridItemData])
+  }, [clusterItems, gridItems])
 
   return {
     mapFeatures,
     allClusters,
     clusters,
     clusterItems,
-    gridItemData,
+    gridItems,
     isLoading,
     gridLayerStyle,
     gridItemsPerCluster,
   }
 }
 
-export function useSelectedGridItemData({ gridItemData, mapFeatures }) {
+export function useSelectedGridItemData({ gridItems, mapFeatures }) {
   // Returns the selected grid item data
 
   const selectedGridItems = useSelector(
@@ -184,13 +204,11 @@ export function useSelectedGridItemData({ gridItemData, mapFeatures }) {
   )
 
   const selectedGridItemData = useMemo(() => {
-    if (selectedGridItems?.length && gridItemData?.length) {
+    if (selectedGridItems?.length && gridItems?.length) {
       // for each selected ID, get the data for that ID
       const selectedGridItemsData = selectedGridItems.map((selectedID) => {
         // Find grid item data by ID
-        const gridItem = gridItemData.find(
-          ({ ID }) => selectedID === parseInt(ID)
-        )
+        const gridItem = gridItems.find(({ ID }) => selectedID === parseInt(ID))
         // Find map feature props by ID
         const featureProps =
           mapFeatures.find((feature) => feature.properties.ID === selectedID)
@@ -202,6 +220,6 @@ export function useSelectedGridItemData({ gridItemData, mapFeatures }) {
     } else {
       return []
     }
-  }, [selectedGridItems, gridItemData, mapFeatures])
+  }, [selectedGridItems, gridItems, mapFeatures])
   return { selectedGridItemData }
 }

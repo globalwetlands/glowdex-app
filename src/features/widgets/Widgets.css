@@ -14,10 +14,10 @@
 .Widgets--Box {
   position: relative;
   border-radius: 20px;
-  background: rgba(255, 255, 255, 1);
+  background: rgba(255, 255, 255, 0.9);
   padding: 30px 30px 30px 40px;
-  max-width: 95%;
-  margin: 0 auto 2.5vw auto;
+  max-width: 50%;
+  margin: 0 auto 20px auto;
   pointer-events: all;
   box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
 }

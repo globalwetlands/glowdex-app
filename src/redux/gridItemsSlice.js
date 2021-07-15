@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-  selectedGridItems: [],
+  selectedGridItems: [51658],
 }
 
 const gridItemsSlice = createSlice({

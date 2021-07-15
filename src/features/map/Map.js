@@ -24,7 +24,7 @@ import {
   gridLayerStyle,
 } from './mapStyles'
 
-export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
+export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
   const mapboxApiAccessToken = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN
   const mapStyle =
     'mapbox://styles/ejinks-gu/ckhycntp61ol31am7qum156sk?optimize=true'
@@ -114,24 +114,44 @@ export function Map({ mapFeatures, gridItemData, clusters, isLoading }) {
 
     const id = feature.properties?.ID
     const clusterNumber = feature.properties?.clusterNumber
-    const name = `${id}`
 
-    const gridItem = gridItemData.find((item) => parseInt(item.ID) === id)
+    const gridItem = gridItems.find((item) => parseInt(item.ID) === id)
+
+    const cluster = clusters.find(({ n }) => n === clusterNumber)
 
     return (
       feature && (
         <div className="Map--Tooltip" style={{ left: x, top: y }}>
-          <div>
-            <span>ID</span>
-            <span className="Map--Tooltip--Value">{name}</span>
+          <div className="control">
+            <div className="tags has-addons">
+              <span className="tag">ID</span>
+              <span className="tag has-text-weight-bold">{gridItem?.ID}</span>
+            </div>
           </div>
-          <div>
-            <span>Cluster</span>
-            <span className="Map--Tooltip--Value">{clusterNumber}</span>
+
+          <div className="control">
+            <div className="tags has-addons">
+              <span className="tag">Country</span>
+              <span className="tag has-text-weight-bold">
+                {gridItem?.TERRITORY1}
+              </span>
+            </div>
           </div>
-          <div>
-            <span>Country</span>
-            <span className="Map--Tooltip--Value">{gridItem?.TERRITORY1}</span>
+
+          <div className="control">
+            <div className="tags has-addons">
+              <span className="tag">Typology</span>
+              <span
+                className="tag"
+                style={{
+                  backgroundColor: cluster.fillColor,
+                  border: `1px solid ${cluster.color}`,
+                  fontWeight: 600,
+                }}
+              >
+                {clusterNumber}
+              </span>
+            </div>
           </div>
         </div>
       )
