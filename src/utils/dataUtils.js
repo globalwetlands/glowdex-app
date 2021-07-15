@@ -1,5 +1,3 @@
-import { saveAs } from 'file-saver'
-import { parseAsync } from 'json2csv'
 import Papa from 'papaparse'
 export const fetcher = (...args) => fetch(...args).then((res) => res.json())
 export const fetcherCsv = (...args) =>
@@ -23,16 +21,6 @@ export const loadSingleLocationData = async (locationID) => {
   const data = fetch(dataUrl).then((res) => res.json())
   // await delay(1000)
   return data
-}
-
-export async function exportCsv({
-  data,
-  filename = `${new Date()}.csv`,
-  options = {},
-}) {
-  const csv = await parseAsync(data, options)
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-  saveAs(blob, filename)
 }
 
 export async function parseCsv({ csvString }) {
