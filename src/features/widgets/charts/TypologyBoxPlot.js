@@ -125,14 +125,6 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
     gridItems,
   })
 
-  if (!significantIndicatorColumns.length) {
-    return (
-      <div className="notification is-warning is-light">
-        No indicators of significance
-      </div>
-    )
-  }
-
   const boxplots = significantIndicatorColumns.map(
     ({ colName, significanceFactor }) => {
       const color = significanceFactor > 0 ? '#00aacc' : '#ff5500'
@@ -177,5 +169,24 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
 
   const data = [...boxplots, ...currentGridItemMarkers]
 
-  return <Plot data={data} layout={layout} config={config} />
+  return (
+    <div
+      style={{
+        minHeight: layout.height,
+        minWidth: layout.width,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      {!significantIndicatorColumns.length && (
+        <div className="notification is-warning is-light">
+          No indicators of significance
+        </div>
+      )}
+      {!!significantIndicatorColumns.length && (
+        <Plot data={data} layout={layout} config={config} />
+      )}
+    </div>
+  )
 }

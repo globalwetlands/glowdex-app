@@ -1,7 +1,9 @@
 import './Widgets.css'
 
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 
+import { SliderInput } from '../../common/SliderInput'
+import { setTypologyBoxPlotQuantile } from '../../redux/globalSettingsSlice'
 import { setSelectedGridItems } from '../../redux/gridItemsSlice'
 import { useSelectedGridItemData } from '../../utils/dataHooks'
 import { WidgetBox } from './WidgetBox'
@@ -44,6 +46,10 @@ function GridItemWidget({
   clusters,
   gridItemsPerCluster,
 }) {
+  const typologyBoxPlotQuantile = useSelector(
+    (state) => state.globalSettings.typologyBoxPlotQuantile
+  )
+
   const gridItem = selectedGridItemData?.[0]
 
   const { TERRITORY1, ID, clusterNumber, color, fillColor } = gridItem
@@ -80,12 +86,42 @@ function GridItemWidget({
           </div>
         </div>
 
+        <TypologyBoxPlotQuantileInput />
+
         <TypologyBoxPlot
           cluster={cluster}
           gridItems={gridItemsPerCluster[clusterNumber]}
           gridItem={gridItem}
+          quantileValue={typologyBoxPlotQuantile}
         />
       </div>
     </div>
+  )
+}
+
+function TypologyBoxPlotQuantileInput() {
+  const dispatch = useDispatch()
+  const typologyBoxPlotQuantile = useSelector(
+    (state) => state.globalSettings.typologyBoxPlotQuantile
+  )
+  return (
+    <fieldset className="field" style={{ maxWidth: 300 }}>
+      <label className="label" style={{ marginBottom: 18 }}>
+        Quantile for Typology Boxplot:{' '}
+        <span className="tag">{typologyBoxPlotQuantile}</span>
+      </label>
+      <div className="control">
+        <SliderInput
+          min={0}
+          max={0.99}
+          step={0.05}
+          value={typologyBoxPlotQuantile}
+          onChange={(value) => {
+            dispatch(setTypologyBoxPlotQuantile(value))
+          }}
+          aria-label="Number of Clusters"
+        />
+      </div>
+    </fieldset>
   )
 }
