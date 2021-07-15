@@ -36,6 +36,6 @@ export async function exportCsv({
 }
 
 export async function parseCsv({ csvString }) {
-  const { data } = Papa.parse(csvString, { header: true })
+  const { data } = Papa.parse(csvString, { header: true, dynamicTyping: true })
   return data
 }
