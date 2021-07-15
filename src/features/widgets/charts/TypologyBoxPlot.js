@@ -1,6 +1,10 @@
 import { quantile } from 'd3-array'
-import React from 'react'
-import Plot from 'react-plotly.js'
+import Plotly from 'plotly.js-cartesian-dist'
+import createPlotlyComponent from 'react-plotly.js/factory'
+
+// Using a smaller precompiled version of plotly.js
+// https://github.com/plotly/react-plotly.js/issues/98#issuecomment-689075526
+const Plot = createPlotlyComponent(Plotly)
 
 const config = {
   displayModeBar: false,
