@@ -2,6 +2,11 @@ import { quantile } from 'd3-array'
 import Plotly from 'plotly.js-cartesian-dist'
 import createPlotlyComponent from 'react-plotly.js/factory'
 
+import {
+  indicatorColnames,
+  indicatorColnamesKeys,
+} from '../../../utils/dataUtils'
+
 // Using a smaller precompiled version of plotly.js
 // https://github.com/plotly/react-plotly.js/issues/98#issuecomment-689075526
 const Plot = createPlotlyComponent(Plotly)
@@ -13,13 +18,13 @@ const config = {
 const layout = {
   plot_bgcolor: 'transparent',
   paper_bgcolor: 'transparent',
-  showlegend: false,
+  showlegend: true,
   hovermode: false,
   margin: {
     l: 15,
     r: 0,
     t: 0,
-    b: 50,
+    b: 100,
   },
   yaxis: {
     // title: 'Val',
@@ -30,51 +35,30 @@ const layout = {
     title: 'Indicator',
     // tickangle: -90,
     showticklabels: true,
+    tickfont: {
+      size: 11,
+    },
   },
   boxgap: 0.1,
   width: 600,
-  height: 300,
+  height: 400,
+}
+
+function getSignificanceFactorColor(significanceFactor) {
+  return significanceFactor > 0 ? '#00aacc' : '#ff5500'
+}
+
+const selectedCellMarker = {
+  size: 7,
+  symbol: 'diamond',
+  color: '#ffaaff',
+  line: { color: '#cc00ff', width: 1 },
 }
 
 function filterSignificantData({
   quantileValue,
   gridItems,
-  columns = [
-    'mang_fish_dens',
-    'mang_invert_dens',
-    'mang_spec_score',
-    'salt_spec_score',
-    'seag_spec_score',
-    'mang_frag_area_mn_rate',
-    'mang_frag_area_mn',
-    'mang_mean_age',
-    'mang_mean_agb_mg_ha',
-    'mang_mean_SOC',
-    'mang_mean_height_m',
-    'pressure_seagrass_climate_current',
-    'pressure_seagrass_land_current',
-    'pressure_seagrass_marine_current',
-    'pressure_seagrass_climate_rate',
-    'pressure_seagrass_land_rate',
-    'pressure_seagrass_marine_rate',
-    'pressure_mangrove_climate_current',
-    'pressure_mangrove_land_current',
-    'pressure_mangrove_marine_current',
-    'pressure_mangrove_climate_rate',
-    'pressure_mangrove_land_rate',
-    'pressure_mangrove_marine_rate',
-    'pressure_saltmarsh_climate_current',
-    'pressure_saltmarsh_land_current',
-    'pressure_saltmarsh_marine_current',
-    'pressure_saltmarsh_climate_rate',
-    'pressure_saltmarsh_land_rate',
-    'pressure_saltmarsh_marine_rate',
-    'mang_spec_prop',
-    'salt_spec_prop',
-    'seag_spec_prop',
-    'mang_loss_rate',
-    'seag_change_rate',
-  ],
+  columns = indicatorColnamesKeys,
 }) {
   const residuals = gridItems.map((item) => item.residuals)
   /*
@@ -127,13 +111,15 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
 
   const boxplots = significantIndicatorColumns.map(
     ({ colName, significanceFactor }) => {
-      const color = significanceFactor > 0 ? '#00aacc' : '#ff5500'
+      const color = getSignificanceFactorColor(significanceFactor)
       // Accessing residuals data
       const y = gridItems.map((item) => item.residuals[colName])
+      const displayName = indicatorColnames[colName]
       const boxplot = {
         type: 'box',
         y,
-        name: colName,
+        name: displayName,
+        showlegend: false,
         // whiskerwidth: 0.2,
         // boxpoints: 'all',
         marker: { color, size: 3 },
@@ -147,27 +133,50 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
 
   const currentGridItemMarkers = significantIndicatorColumns.map(
     ({ colName }) => {
-      const name = `Current ${colName}`
-      const x = [colName]
+      const displayName = indicatorColnames[colName]
+      const name = `Cell ${displayName}`
+      const x = [displayName]
       const y = [gridItem.residuals[colName]]
-
       const marker = {
         x,
         y,
         name,
         // text: 'Some really interesting hover info',
-        marker: {
-          size: 7,
-          symbol: 'diamond',
-          color: '#ffaaff',
-          line: { color: '#cc00ff', width: 1 },
-        },
+        showlegend: false,
+        marker: selectedCellMarker,
       }
       return marker
     }
   )
 
-  const data = [...boxplots, ...currentGridItemMarkers]
+  const currentGridItemLegendTrace = {
+    // Dummy trace to create legend item
+    x: [null],
+    y: [null],
+    name: 'Selected Cell',
+    marker: selectedCellMarker,
+  }
+
+  const factorTraces = [1, -1].map((significanceFactor) => ({
+    // Dummy trace to create legend item
+    x: [null],
+    y: [null],
+    name: `${significanceFactor > 0 ? 'Positive' : 'Negative'} Factor`,
+    marker: {
+      size: 7,
+      symbol: 'square',
+      color: getSignificanceFactorColor(significanceFactor),
+      // line: { color: '#cc00ff', width: 1 },
+    },
+  }))
+
+  const data = [
+    ...boxplots,
+    ...currentGridItemMarkers,
+    // Dummy traces to create legend
+    ...factorTraces,
+    currentGridItemLegendTrace,
+  ]
 
   return (
     <div
