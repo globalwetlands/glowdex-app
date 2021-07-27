@@ -13,7 +13,7 @@ export function MapLegend({ clusters }) {
 
   return (
     <div className="MapLegend">
-      <fieldset className="field" style={{ maxWidth: 300 }}>
+      <fieldset className="field" style={{ maxWidth: 330 }}>
         <label className="label" style={{ marginBottom: 18 }}>
           Number of Typologies: <span className="tag">{numberOfClusters}</span>
         </label>
