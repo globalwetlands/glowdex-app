@@ -128,7 +128,7 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
       const x = gridItems.map((item) => item.residuals[colName])
       const displayName = getColumnDisplayName(colName)
       const boxplot = {
-        type: 'box',
+        type: 'violin',
         x,
         name: displayName,
         showlegend: false,
