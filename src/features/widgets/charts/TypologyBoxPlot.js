@@ -55,6 +55,10 @@ function getSignificanceFactorColor(significanceFactor) {
   return significanceFactor > 0 ? '#00aacc' : '#ff5500'
 }
 
+function getColumnDisplayName(colName) {
+  return `${indicatorColnames[colName]?.habitatLabel} ${indicatorColnames[colName]?.label}`
+}
+
 const selectedCellMarker = {
   size: 7,
   symbol: 'diamond',
@@ -122,7 +126,7 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
       const color = getSignificanceFactorColor(significanceFactor)
       // Accessing residuals data
       const x = gridItems.map((item) => item.residuals[colName])
-      const displayName = indicatorColnames[colName]
+      const displayName = getColumnDisplayName(colName)
       const boxplot = {
         type: 'box',
         x,
@@ -141,7 +145,7 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
 
   const currentGridItemMarkers = significantIndicatorColumns.map(
     ({ colName }) => {
-      const displayName = indicatorColnames[colName]
+      const displayName = getColumnDisplayName(colName)
       const name = `Cell ${displayName}`
       const y = [displayName]
       const x = [gridItem.residuals[colName]]
