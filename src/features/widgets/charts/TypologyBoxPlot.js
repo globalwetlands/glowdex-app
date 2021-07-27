@@ -1,6 +1,8 @@
 import { quantile } from 'd3-array'
 import Plotly from 'plotly.js-cartesian-dist'
+import { useMemo } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
+import { useMeasure } from 'react-use'
 
 import {
   indicatorColnames,
@@ -40,7 +42,6 @@ const layout = {
     },
   },
   boxgap: 0.1,
-  width: 600,
   height: 400,
 }
 
@@ -104,6 +105,7 @@ function filterSignificantData({
 }
 
 export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
+  const [containerRef, { width }] = useMeasure()
   const { significantIndicatorColumns } = filterSignificantData({
     quantileValue,
     gridItems,
@@ -178,23 +180,22 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
     currentGridItemLegendTrace,
   ]
 
+  const calculatedLayout = useMemo(() => {
+    return {
+      ...layout,
+      width,
+    }
+  }, [width])
+
   return (
-    <div
-      style={{
-        minHeight: layout.height,
-        minWidth: layout.width,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-      }}
-    >
+    <div ref={containerRef} style={{ width: '100%' }}>
       {!significantIndicatorColumns.length && (
         <div className="notification is-warning is-light">
           No indicators of significance
         </div>
       )}
       {!!significantIndicatorColumns.length && (
-        <Plot data={data} layout={layout} config={config} />
+        <Plot data={data} layout={calculatedLayout} config={config} />
       )}
     </div>
   )

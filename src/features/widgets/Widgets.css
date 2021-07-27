@@ -1,32 +1,30 @@
 .Widgets--Wrap {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  top: 0px;
-  pointer-events: none;
+  --padding: 1rem;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
   z-index: 2;
+  height: 100%;
+  padding: var(--padding);
+  background-color: var(--color-light-grey);
+  overflow: auto;
+}
+
+.Widgets--Wrap > * + * {
+  margin-top: var(--padding);
 }
 
 .Widgets--Box {
+  border: 1px solid var(--color-mid-grey);
+  background-color: white;
+  border-radius: 5px;
   position: relative;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 30px 30px 30px 40px;
-  max-width: 95%;
-  margin: 0 auto 20px auto;
-  pointer-events: all;
-  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.08);
+  padding: var(--padding);
+  width: 100%;
 }
 
 .Widgets--Box--Inner {
-  display: flex;
-  flex-direction: row;
   overflow: hidden;
-  overflow-x: scroll;
+  width: 100%;
   padding-bottom: 10px;
 }
 
@@ -44,13 +42,6 @@
 .Widgets--Box--CloseButton:focus {
   opacity: 1;
   transform: scale(1.1);
-}
-
-.Widgets--Box--Column {
-  flex-shrink: 0;
-  min-width: 350px;
-  display: flex;
-  flex-direction: column;
 }
 
 .Widgets--Box--Column--Title {

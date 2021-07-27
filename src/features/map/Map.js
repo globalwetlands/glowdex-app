@@ -16,8 +16,6 @@ import { Spinner } from '../../common/Spinner'
 import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
 import { setSelectedGridItems } from '../../redux/gridItemsSlice'
 import { getBboxCenter } from '../../utils/mapUtils'
-import { MapLegend } from './MapLegend'
-import { Menu } from './Menu'
 import {
   gridLayerHoverStyle,
   gridLayerSelectedStyle,
@@ -214,11 +212,6 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
 
         {renderTooltip()}
       </MapGL>
-
-      <div className="Map--Overlays">
-        <Menu />
-        {!isLoading && <MapLegend clusters={clusters} />}
-      </div>
 
       {isLoading && (
         <Spinner
