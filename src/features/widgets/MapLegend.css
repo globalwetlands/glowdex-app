@@ -20,7 +20,7 @@
 }
 
 .MapLegend--ColourStop {
-  display: flex;
+  display: inline-block;
 }
 
 .MapLegend--ColourBox {
@@ -29,6 +29,9 @@
   border: 1px solid black;
   border-radius: 2px;
   margin-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .MapLegend--Value {

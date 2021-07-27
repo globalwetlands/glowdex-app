@@ -44,8 +44,9 @@ export function MapLegend({ clusters }) {
                   borderColor: cluster.color,
                   backgroundColor: cluster.fillColor,
                 }}
-              />
-              <span className="MapLegend--Value">Typology {cluster.n}</span>
+              >
+                <span className="MapLegend--Value">{cluster.n}</span>
+              </div>
             </div>
           )
         })}
