@@ -16,6 +16,8 @@ export function App() {
         direction={SplitDirection.Horizontal}
         initialSizes={initialPanelSizes}
         minWidth={300}
+        gutterClassName={styles.ReactSplitGutterHorizontal}
+        draggerClassName={styles.ReactSplitDraggerHorizontal}
       >
         <Widgets
           mapFeatures={mapFeatures}
