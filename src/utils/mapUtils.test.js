@@ -1,4 +1,4 @@
-import { getBboxCenter } from './mapUtils'
+import { formatCoordinate, getBboxCenter } from './mapUtils'
 
 // a function that generates 10 random bounding box lat/lng pairs
 function randomBbox() {
@@ -27,4 +27,17 @@ it('Gets the center of the bbox', () => {
       longitude: bbox.centerLng,
     })
   }
+})
+
+// a test for the formatCoordinate function
+it('Formats coordinates', () => {
+  expect(formatCoordinate({ latitude: 0, longitude: 0 })).toEqual(
+    `0° 0′ 0.0″ S 0° 0′ 0.0″ W`
+  )
+  expect(formatCoordinate({ latitude: 40.76, longitude: -73.984 })).toEqual(
+    `40° 45′ 36.0″ N 73° 59′ 2.4″ W`
+  )
+  expect(formatCoordinate({ latitude: -40.76, longitude: 73.984 })).toEqual(
+    `40° 45′ 36.0″ S 73° 59′ 2.4″ E`
+  )
 })

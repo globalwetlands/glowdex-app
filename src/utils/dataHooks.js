@@ -3,8 +3,11 @@ import { useMemo } from 'react'
 import { useSelector } from 'react-redux'
 import useSWR from 'swr'
 
+import bbox from '@turf/bbox'
+
 import { getBrewerColors } from './colorUtils'
 import { fetcher, fetcherCsv } from './dataUtils'
+import { getBboxCenter } from './mapUtils'
 
 export function generateGridLayerStyle({ clusters }) {
   const colors = clusters.map((cluster) => cluster.color)
@@ -210,11 +213,14 @@ export function useSelectedGridItemData({ gridItems, mapFeatures }) {
         // Find grid item data by ID
         const gridItem = gridItems.find(({ ID }) => selectedID === parseInt(ID))
         // Find map feature props by ID
-        const featureProps =
-          mapFeatures.find((feature) => feature.properties.ID === selectedID)
-            ?.properties || {}
+        const mapFeature =
+          mapFeatures.find((feature) => feature.properties.ID === selectedID) ||
+          {}
+        const [minLng, minLat, maxLng, maxLat] = bbox(mapFeature)
+        const centerCoords = getBboxCenter({ minLng, minLat, maxLng, maxLat })
+        const featureProps = mapFeature?.properties || {}
 
-        return { ...gridItem, ...featureProps }
+        return { ...gridItem, ...featureProps, centerCoords }
       })
       return selectedGridItemsData
     } else {

@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { SliderInput } from '../../common/SliderInput'
 import { setTypologyBoxPlotQuantile } from '../../redux/globalSettingsSlice'
+import { formatCoordinate } from '../../utils/mapUtils'
 import { TypologyBoxPlot } from './charts/TypologyBoxPlot'
 
 export function GridItemWidget({
@@ -16,7 +17,8 @@ export function GridItemWidget({
 
   const gridItem = selectedGridItemData?.[0]
 
-  const { TERRITORY1, ID, clusterNumber, color, fillColor } = gridItem
+  const { TERRITORY1, ID, clusterNumber, color, fillColor, centerCoords } =
+    gridItem
 
   const cluster = clusters.find(({ n }) => n === clusterNumber)
 
@@ -24,6 +26,7 @@ export function GridItemWidget({
     <div className="Widgets--Box--Inner">
       <div className="content">
         <h3>{TERRITORY1}</h3>
+        <h6 className="tag">{formatCoordinate(centerCoords)}</h6>
 
         <div className="field is-grouped is-grouped-multiline">
           <div className="control">
