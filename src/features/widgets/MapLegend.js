@@ -12,8 +12,8 @@ export function MapLegend({ clusters }) {
   )
 
   return (
-    <div className="Map--Overlays--Box MapLegend">
-      <fieldset className="field">
+    <div className="MapLegend">
+      <fieldset className="field" style={{ maxWidth: 330 }}>
         <label className="label" style={{ marginBottom: 18 }}>
           Number of Typologies: <span className="tag">{numberOfClusters}</span>
         </label>
@@ -44,8 +44,9 @@ export function MapLegend({ clusters }) {
                   borderColor: cluster.color,
                   backgroundColor: cluster.fillColor,
                 }}
-              />
-              <span className="MapLegend--Value">Typology {cluster.n}</span>
+              >
+                <span className="MapLegend--Value">{cluster.n}</span>
+              </div>
             </div>
           )
         })}
