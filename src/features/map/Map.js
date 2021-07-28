@@ -16,6 +16,7 @@ import { Spinner } from '../../common/Spinner'
 import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
 import { setSelectedGridItems } from '../../redux/gridItemsSlice'
 import { getBboxCenter } from '../../utils/mapUtils'
+import { delay } from '../../utils/utils'
 import {
   gridLayerHoverStyle,
   gridLayerSelectedStyle,
@@ -45,7 +46,7 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
   const [hoveredFeature, setHoveredFeature] = useState({})
 
   const fitBounds = useCallback(
-    (feature) => {
+    async (feature, duration = 250) => {
       // calculate the bounding box of the feature
       const [minLng, minLat, maxLng, maxLat] = bbox(feature)
       const { longitude, latitude } = getBboxCenter({
@@ -56,7 +57,6 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
       })
 
       const zoom = 5
-      const duration = 500
 
       const updatedViewport = {
         ...viewport,
@@ -68,6 +68,8 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
         // transitionEasing: d3.easeCubic,
       }
       setViewport(updatedViewport)
+      await delay(duration + 50)
+      return
     },
     [viewport]
   )
@@ -91,13 +93,13 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
     setHoveredFeature({})
   }
 
-  const onClick = (e) => {
+  const onClick = async (e) => {
     const { features } = e
     const clickedFeature =
       features && features.find((f) => f.layer.id === gridLayerStyle.id)
     if (clickedFeature) {
       const { ID } = clickedFeature.properties
-      fitBounds(clickedFeature)
+      await fitBounds(clickedFeature)
       dispatch(setSelectedGridItems([ID]))
       dispatch(hideMenuHelpText())
     }
