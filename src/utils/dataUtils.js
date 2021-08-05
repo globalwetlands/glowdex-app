@@ -32,25 +32,36 @@ export async function parseCsv({ csvString }) {
   return data
 }
 
-function mapHabitatLabel(indicatorRow) {
+function mapHabitatData(indicatorRow) {
   let habitatLabel = ''
+  let habitatColor = ''
   switch (indicatorRow.habitat) {
-    case 'sg':
-      habitatLabel = 'Seagrass'
-      break
+    // #ff5500
+    // #00aacc
     case 'mg':
       habitatLabel = 'Mangrove'
+      habitatColor = 'hsla(0, 66%, 63%, 1)'
       break
+
+    case 'sg':
+      habitatLabel = 'Seagrass'
+      habitatColor = 'hsla(83, 53%, 59%, 1)'
+      break
+
     case 'sm':
       habitatLabel = 'Saltmarsh'
+      habitatColor = 'hsla(161, 53%, 58%, 1)'
       break
+
     default:
       habitatLabel = ''
   }
-  return { ...indicatorRow, habitatLabel }
+  return { ...indicatorRow, habitatLabel, habitatColor }
 }
+
 export const indicatorColnames = _.chain(indicatorLabels)
-  .map(mapHabitatLabel)
+  .map(mapHabitatData)
+  .sortBy(['habitat', 'indicator'])
   .keyBy('indicator')
   .value()
 

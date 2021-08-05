@@ -51,12 +51,14 @@ const layout = {
   boxgap: 0.1,
 }
 
-function getSignificanceFactorColor(significanceFactor) {
-  return significanceFactor > 0 ? '#00aacc' : '#ff5500'
+function getColumnDisplayName(colName) {
+  return `${indicatorColnames[colName]?.habitatLabel} ${indicatorColnames[
+    colName
+  ]?.label?.toLowerCase()}`
 }
 
-function getColumnDisplayName(colName) {
-  return `${indicatorColnames[colName]?.habitatLabel} ${indicatorColnames[colName]?.label}`
+function getColumnColor(colName) {
+  return indicatorColnames[colName]?.habitatColor
 }
 
 const selectedCellMarker = {
@@ -121,27 +123,25 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
     gridItems,
   })
 
-  const boxplots = significantIndicatorColumns.map(
-    ({ colName, significanceFactor }) => {
-      const color = getSignificanceFactorColor(significanceFactor)
-      // Accessing residuals data
-      const x = gridItems.map((item) => item.residuals[colName])
-      const displayName = getColumnDisplayName(colName)
-      const boxplot = {
-        type: 'violin',
-        x,
-        name: displayName,
-        showlegend: false,
-        // whiskerwidth: 0.2,
-        // boxpoints: 'all',
-        marker: { color, size: 3 },
-        line: {
-          width: 1,
-        },
-      }
-      return boxplot
+  const boxplots = significantIndicatorColumns.reverse().map(({ colName }) => {
+    const color = getColumnColor(colName)
+    // Accessing residuals data
+    const x = gridItems.map((item) => item.residuals[colName])
+    const displayName = getColumnDisplayName(colName)
+    const boxplot = {
+      type: 'violin',
+      x,
+      name: displayName,
+      showlegend: false,
+      // whiskerwidth: 0.2,
+      // boxpoints: 'all',
+      marker: { color, size: 3 },
+      line: {
+        width: 1,
+      },
     }
-  )
+    return boxplot
+  })
 
   const currentGridItemMarkers = significantIndicatorColumns.map(
     ({ colName }) => {
@@ -169,24 +169,24 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
     marker: selectedCellMarker,
   }
 
-  const factorTraces = [1, -1].map((significanceFactor) => ({
-    // Dummy trace to create legend item
-    x: [null],
-    y: [null],
-    name: `${significanceFactor > 0 ? 'Positive' : 'Negative'} Factor`,
-    marker: {
-      size: 7,
-      symbol: 'square',
-      color: getSignificanceFactorColor(significanceFactor),
-      // line: { color: '#cc00ff', width: 1 },
-    },
-  }))
+  // const factorTraces = [1, -1].map((significanceFactor) => ({
+  //   // Dummy trace to create legend item
+  //   x: [null],
+  //   y: [null],
+  //   name: `${significanceFactor > 0 ? 'Positive' : 'Negative'} Factor`,
+  //   marker: {
+  //     size: 7,
+  //     symbol: 'square',
+  //     color: getColumnColor(),
+  //     // line: { color: '#cc00ff', width: 1 },
+  //   },
+  // }))
 
   const data = [
     ...boxplots,
     ...currentGridItemMarkers,
     // Dummy traces to create legend
-    ...factorTraces,
+    // ...factorTraces,
     currentGridItemLegendTrace,
   ]
 
