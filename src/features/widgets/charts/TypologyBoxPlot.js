@@ -1,4 +1,5 @@
 import { quantile } from 'd3-array'
+import _ from 'lodash'
 import Plotly from 'plotly.js-cartesian-dist'
 import { useMemo } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
@@ -116,89 +117,109 @@ function filterSignificantData({
   return { significantIndicatorColumns }
 }
 
+function groupColumnsByDimension(columns) {
+  const groupedBy = _.groupBy(columns, ({ colName }) => {
+    const col = indicatorColnames[colName]
+    return col?.dimension
+  })
+  return groupedBy
+}
+
+function useTypologyPlotData({
+  width,
+  significantIndicatorColumns,
+  gridItems,
+  gridItem,
+}) {
+  const columnsByDimension = groupColumnsByDimension(
+    significantIndicatorColumns
+  )
+  const groupedPlots = _.map(
+    columnsByDimension,
+    (indicatorColumns, dimension) => {
+      const boxplots = indicatorColumns.reverse().map(({ colName }) => {
+        const color = getColumnColor(colName)
+        // Accessing residuals data
+        const x = gridItems.map((item) => item.residuals[colName])
+        const displayName = getColumnDisplayName(colName)
+        const boxplot = {
+          type: 'violin',
+          x,
+          name: displayName,
+          showlegend: false,
+          // whiskerwidth: 0.2,
+          // boxpoints: 'all',
+          marker: { color, size: 3 },
+          line: {
+            width: 1,
+          },
+        }
+        return boxplot
+      })
+
+      const currentGridItemMarkers = indicatorColumns.map(({ colName }) => {
+        const displayName = getColumnDisplayName(colName)
+        const name = `Cell ${displayName}`
+        const y = [displayName]
+        const x = [gridItem.residuals[colName]]
+        const marker = {
+          x,
+          y,
+          name,
+          // text: 'Some really interesting hover info',
+          showlegend: false,
+          marker: selectedCellMarker,
+        }
+        return marker
+      })
+
+      const currentGridItemLegendTrace = {
+        // Dummy trace to create legend item
+        x: [null],
+        y: [null],
+        name: 'Selected Cell',
+        marker: selectedCellMarker,
+      }
+
+      const rowHeight = 40
+      const height = indicatorColumns.length * rowHeight
+
+      const calculatedLayout = {
+        ...layout,
+        width,
+        height,
+      }
+
+      return {
+        data: [
+          ...boxplots,
+          ...currentGridItemMarkers,
+          currentGridItemLegendTrace,
+        ],
+        layout: calculatedLayout,
+      }
+    }
+  )
+
+  return {
+    groupedPlots,
+  }
+}
+
 export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
   const [containerRef, { width }] = useMeasure()
+
   const { significantIndicatorColumns } = filterSignificantData({
     quantileValue,
     gridItems,
   })
 
-  const boxplots = significantIndicatorColumns.reverse().map(({ colName }) => {
-    const color = getColumnColor(colName)
-    // Accessing residuals data
-    const x = gridItems.map((item) => item.residuals[colName])
-    const displayName = getColumnDisplayName(colName)
-    const boxplot = {
-      type: 'violin',
-      x,
-      name: displayName,
-      showlegend: false,
-      // whiskerwidth: 0.2,
-      // boxpoints: 'all',
-      marker: { color, size: 3 },
-      line: {
-        width: 1,
-      },
-    }
-    return boxplot
+  const { groupedPlots } = useTypologyPlotData({
+    significantIndicatorColumns,
+    width,
+    gridItems,
+    gridItem,
   })
-
-  const currentGridItemMarkers = significantIndicatorColumns.map(
-    ({ colName }) => {
-      const displayName = getColumnDisplayName(colName)
-      const name = `Cell ${displayName}`
-      const y = [displayName]
-      const x = [gridItem.residuals[colName]]
-      const marker = {
-        x,
-        y,
-        name,
-        // text: 'Some really interesting hover info',
-        showlegend: false,
-        marker: selectedCellMarker,
-      }
-      return marker
-    }
-  )
-
-  const currentGridItemLegendTrace = {
-    // Dummy trace to create legend item
-    x: [null],
-    y: [null],
-    name: 'Selected Cell',
-    marker: selectedCellMarker,
-  }
-
-  // const factorTraces = [1, -1].map((significanceFactor) => ({
-  //   // Dummy trace to create legend item
-  //   x: [null],
-  //   y: [null],
-  //   name: `${significanceFactor > 0 ? 'Positive' : 'Negative'} Factor`,
-  //   marker: {
-  //     size: 7,
-  //     symbol: 'square',
-  //     color: getColumnColor(),
-  //     // line: { color: '#cc00ff', width: 1 },
-  //   },
-  // }))
-
-  const data = [
-    ...boxplots,
-    ...currentGridItemMarkers,
-    // Dummy traces to create legend
-    // ...factorTraces,
-    currentGridItemLegendTrace,
-  ]
-
-  const calculatedLayout = useMemo(() => {
-    const rowHeight = 40
-    const height = significantIndicatorColumns.length * rowHeight
-    return {
-      ...layout,
-      width,
-      height,
-    }
-  }, [significantIndicatorColumns.length, width])
 
   return (
     <div ref={containerRef} style={{ width: '100%' }}>
@@ -207,9 +228,15 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
           No indicators of significance
         </div>
       )}
-      {!!significantIndicatorColumns.length && (
-        <Plot data={data} layout={calculatedLayout} config={config} />
-      )}
+      {!!significantIndicatorColumns.length &&
+        groupedPlots.map(({ data, layout }, index) => (
+          <Plot
+            key={`groupedPlot${index}`}
+            data={data}
+            layout={layout}
+            config={config}
+          />
+        ))}
     </div>
   )
 }
