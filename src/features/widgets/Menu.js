@@ -1,7 +1,6 @@
 import './Menu.css'
 
 import { Fragment, useState } from 'react'
-import { useSelector } from 'react-redux'
 
 import { IconButton } from '../../common/IconButton'
 import { Popup } from '../../common/Popup'
@@ -43,9 +42,7 @@ const MenuIcon = (props) => {
 
 export function Menu() {
   const [menuIsOpen, setMenuIsOpen] = useState(false)
-  const showMenuHelpText = useSelector(
-    (state) => state.globalSettings.showMenuHelpText
-  )
+  const showMenuHelpText = true
 
   const menuPopupTitle = 'Glowdex App'
 
@@ -63,7 +60,9 @@ export function Menu() {
           title="Open Menu"
           tabIndex={1}
         />
-        <div className="Menu--HelpText">Click on a country to get started</div>
+        <div className="Menu--HelpText">
+          Click on a grid cell to get started
+        </div>
       </div>
       <Popup
         title={menuPopupTitle}

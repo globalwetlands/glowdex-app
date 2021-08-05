@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import bbox from '@turf/bbox'
 
 import { Spinner } from '../../common/Spinner'
-import { hideMenuHelpText } from '../../redux/globalSettingsSlice'
 import { setSelectedGridItems } from '../../redux/gridItemsSlice'
 import { getBboxCenter } from '../../utils/mapUtils'
 import { delay } from '../../utils/utils'
@@ -101,7 +100,6 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
       const { ID } = clickedFeature.properties
       await fitBounds(clickedFeature)
       dispatch(setSelectedGridItems([ID]))
-      dispatch(hideMenuHelpText())
     }
   }
 
