@@ -5,11 +5,18 @@ import { useSelector } from 'react-redux'
 
 import { IconButton } from '../../common/IconButton'
 import { Popup } from '../../common/Popup'
+import fig1 from '../../images/fig1.png'
 
 const MenuPopupContent = () => (
   <div>
-    <h4>Hello World</h4>
-    <p></p>
+    <figure style={{ width: '100%', maxWidth: 550 }}>
+      <img src={fig1} alt="Figure 1" width={1488} height={1334} />
+      <figcaption>
+        Figure 1: Flow diagram of the nine key methodological steps used to map
+        and diagnose spatially explicit typologies of coastal wetland ecosystem
+        condition applicable at a global scale.
+      </figcaption>
+    </figure>
   </div>
 )
 
