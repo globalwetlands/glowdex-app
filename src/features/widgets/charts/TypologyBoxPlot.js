@@ -1,8 +1,8 @@
 import { quantile } from 'd3-array'
 import _ from 'lodash'
 import Plotly from 'plotly.js-cartesian-dist'
-import { useMemo } from 'react'
 import createPlotlyComponent from 'react-plotly.js/factory'
+import { useSelector } from 'react-redux'
 import { useMeasure } from 'react-use'
 
 import {
@@ -60,6 +60,10 @@ function getColumnDisplayName(colName) {
 
 function getColumnColor(colName) {
   return indicatorColnames[colName]?.habitatColor
+}
+
+function getColumnHabitat(colName) {
+  return indicatorColnames[colName]?.habitat
 }
 
 const selectedCellMarker = {
@@ -131,9 +135,14 @@ function useTypologyPlotData({
   gridItems,
   gridItem,
 }) {
-  const columnsByDimension = groupColumnsByDimension(
-    significantIndicatorColumns
+  const enabledHabitats = useSelector(
+    (state) => state.globalSettings.enabledHabitats
   )
+
+  const filteredColumns = significantIndicatorColumns.filter(({ colName }) =>
+    enabledHabitats.includes(getColumnHabitat(colName))
+  )
+  const columnsByDimension = groupColumnsByDimension(filteredColumns)
   const groupedPlots = _.chain(columnsByDimension)
     .map((indicatorColumns, dimension) => {
       const boxplots = indicatorColumns.reverse().map(({ colName }) => {
@@ -224,12 +233,12 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
 
   return (
     <div ref={containerRef} style={{ width: '100%' }}>
-      {!significantIndicatorColumns.length && (
+      {!groupedPlots.length && (
         <div className="notification is-warning is-light">
           No indicators of significance
         </div>
       )}
-      {!!significantIndicatorColumns.length &&
+      {!!groupedPlots.length &&
         groupedPlots.map(({ data, layout, dimension }, index) => {
           return (
             <div key={`groupedPlot${dimension}`} className="block">

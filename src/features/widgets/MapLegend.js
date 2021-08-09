@@ -3,13 +3,41 @@ import './MapLegend.css'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { SliderInput } from '../../common/SliderInput'
-import { setNumberOfClusters } from '../../redux/globalSettingsSlice'
+import {
+  setNumberOfClusters,
+  toggleEnabledHabitat,
+} from '../../redux/globalSettingsSlice'
 
 export function MapLegend({ clusters }) {
   const dispatch = useDispatch()
   const numberOfClusters = useSelector(
     (state) => state.globalSettings.numberOfClusters
   )
+
+  const enabledHabitats = useSelector(
+    (state) => state.globalSettings.enabledHabitats
+  )
+
+  function HabitatCheckbox({ title, name }) {
+    function toggleHabitat(e) {
+      const habitat = e.target.name
+      dispatch(toggleEnabledHabitat(habitat))
+    }
+
+    return (
+      <div className="control">
+        <label className="checkbox">
+          <input
+            type="checkbox"
+            name={name}
+            onChange={toggleHabitat}
+            checked={enabledHabitats.includes(name)}
+          />
+          {title}
+        </label>
+      </div>
+    )
+  }
 
   return (
     <div className="MapLegend">
@@ -31,7 +59,7 @@ export function MapLegend({ clusters }) {
         </div>
       </fieldset>
 
-      <div className="MapLegend--Display">
+      <div className="MapLegend--Display block">
         {clusters.map((cluster) => {
           return (
             <div
@@ -51,6 +79,13 @@ export function MapLegend({ clusters }) {
           )
         })}
       </div>
+
+      <fieldset className="field">
+        <label className="label">Habitats</label>
+        <HabitatCheckbox title="Mangroves" name="mg" />
+        <HabitatCheckbox title="Saltmarsh" name="sm" />
+        <HabitatCheckbox title="Seagrass" name="sg" />
+      </fieldset>
     </div>
   )
 }

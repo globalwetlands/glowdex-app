@@ -93,3 +93,7 @@ a {
 .button:active {
   transform: scale(0.97);
 }
+
+.checkbox input[type='checkbox'] {
+  margin-right: 0.3em;
+}

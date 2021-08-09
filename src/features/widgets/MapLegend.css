@@ -1,8 +1,4 @@
 .MapLegend {
-  font-size: 12px;
-  display: flex;
-  flex-direction: column;
-  padding: 15px;
   min-width: 250px;
 }
 
@@ -32,6 +28,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  font-size: 12px;
 }
 
 .MapLegend--Value {
