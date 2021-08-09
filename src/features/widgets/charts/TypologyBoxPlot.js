@@ -134,9 +134,8 @@ function useTypologyPlotData({
   const columnsByDimension = groupColumnsByDimension(
     significantIndicatorColumns
   )
-  const groupedPlots = _.map(
-    columnsByDimension,
-    (indicatorColumns, dimension) => {
+  const groupedPlots = _.chain(columnsByDimension)
+    .map((indicatorColumns, dimension) => {
       const boxplots = indicatorColumns.reverse().map(({ colName }) => {
         const color = getColumnColor(colName)
         // Accessing residuals data
@@ -197,9 +196,11 @@ function useTypologyPlotData({
           currentGridItemLegendTrace,
         ],
         layout: calculatedLayout,
+        dimension,
       }
-    }
-  )
+    })
+    .sortBy('dimension')
+    .value()
 
   return {
     groupedPlots,
@@ -229,14 +230,14 @@ export function TypologyBoxPlot({ gridItems, gridItem, quantileValue = 0.8 }) {
         </div>
       )}
       {!!significantIndicatorColumns.length &&
-        groupedPlots.map(({ data, layout }, index) => (
-          <Plot
-            key={`groupedPlot${index}`}
-            data={data}
-            layout={layout}
-            config={config}
-          />
-        ))}
+        groupedPlots.map(({ data, layout, dimension }, index) => {
+          return (
+            <div key={`groupedPlot${dimension}`} className="block">
+              <h6 className="title is-6 mb-0 is-underlined">{dimension}</h6>
+              <Plot data={data} layout={layout} config={config} />
+            </div>
+          )
+        })}
     </div>
   )
 }

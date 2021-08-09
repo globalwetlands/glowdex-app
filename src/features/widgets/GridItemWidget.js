@@ -53,7 +53,9 @@ export function GridItemWidget({
           </div>
         </div>
 
-        <TypologyBoxPlotQuantileInput />
+        <div className="block">
+          <TypologyBoxPlotQuantileInput />
+        </div>
 
         <TypologyBoxPlot
           cluster={cluster}
