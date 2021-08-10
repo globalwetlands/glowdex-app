@@ -138,10 +138,19 @@ function useTypologyPlotData({
   const enabledHabitats = useSelector(
     (state) => state.globalSettings.enabledHabitats
   )
+  const habitatPresence = {
+    mg: gridItem.mang_presence === 1,
+    sm: gridItem.salt_presence === 1,
+    sg: gridItem.seag_presence === 1,
+  }
 
-  const filteredColumns = significantIndicatorColumns.filter(({ colName }) =>
-    enabledHabitats.includes(getColumnHabitat(colName))
-  )
+  const filteredColumns = significantIndicatorColumns.filter(({ colName }) => {
+    const habitatKey = getColumnHabitat(colName)
+    const habitatEnabled = enabledHabitats.includes(habitatKey)
+
+    const hasHabitatPresence = habitatPresence[habitatKey]
+    return habitatEnabled && hasHabitatPresence
+  })
   const columnsByDimension = groupColumnsByDimension(filteredColumns)
   const groupedPlots = _.chain(columnsByDimension)
     .map((indicatorColumns, dimension) => {
