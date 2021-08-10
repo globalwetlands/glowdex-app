@@ -2,6 +2,8 @@
 
 ![GitHub License](https://img.shields.io/github/license/globalwetlands/glowdex-app)
 
+View the app: **[glowdex.wetlands.app](https://glowdex.wetlands.app)**
+
 [About](#about) | [Instructions](#instructions) | [Development](#development) | [License](LICENSE)
 
 ## About
