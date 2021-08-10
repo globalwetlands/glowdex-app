@@ -47,6 +47,7 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
   const fitBounds = useCallback(
     async (feature, duration = 250) => {
       // calculate the bounding box of the feature
+      if (!feature) return
       const [minLng, minLat, maxLng, maxLat] = bbox(feature)
       const { longitude, latitude } = getBboxCenter({
         minLng,

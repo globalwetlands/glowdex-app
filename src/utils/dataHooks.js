@@ -252,21 +252,33 @@ export function useSelectedGridItemData({ gridItems, mapFeatures }) {
   )
 
   const selectedGridItemData = useMemo(() => {
-    if (selectedGridItems?.length && gridItems?.length) {
-      // for each selected ID, get the data for that ID
-      const selectedGridItemsData = selectedGridItems.map((selectedID) => {
-        // Find grid item data by ID
-        const gridItem = gridItems.find(({ ID }) => selectedID === parseInt(ID))
-        // Find map feature props by ID
-        const mapFeature =
-          mapFeatures.find((feature) => feature.properties.ID === selectedID) ||
-          {}
-        const [minLng, minLat, maxLng, maxLat] = bbox(mapFeature)
-        const centerCoords = getBboxCenter({ minLng, minLat, maxLng, maxLat })
-        const featureProps = mapFeature?.properties || {}
+    const mapFeatureIds = mapFeatures.map((feature) => feature.properties.ID)
 
-        return { ...gridItem, ...featureProps, centerCoords }
-      })
+    if (selectedGridItems?.length && gridItems?.length) {
+      // remove filtered out selectedItems
+      const filteredSelectedGridItems = selectedGridItems.filter((selectedID) =>
+        mapFeatureIds.includes(selectedID)
+      )
+
+      // for each selected ID, get the data for that ID
+      const selectedGridItemsData = filteredSelectedGridItems.map(
+        (selectedID) => {
+          // Find grid item data by ID
+          const gridItem = gridItems.find(
+            ({ ID }) => selectedID === parseInt(ID)
+          )
+          // Find map feature props by ID
+          const mapFeature = mapFeatures.find(
+            (feature) => feature.properties.ID === selectedID
+          )
+
+          const [minLng, minLat, maxLng, maxLat] = bbox(mapFeature)
+          const centerCoords = getBboxCenter({ minLng, minLat, maxLng, maxLat })
+          const featureProps = mapFeature?.properties || {}
+
+          return { ...gridItem, ...featureProps, centerCoords }
+        }
+      )
       return selectedGridItemsData
     } else {
       return []
