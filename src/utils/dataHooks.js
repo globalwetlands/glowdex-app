@@ -54,6 +54,9 @@ function getClusterItems({ numberOfClusters, allClusters }) {
         ID: parseInt(item.ID, 10),
         cluster: parseInt(item?.[clusterCol], 10),
         color: item?.[colorCol],
+        mang_presence: item.mang_presence,
+        salt_presence: item.salt_presence,
+        seag_presence: item.seag_presence,
       }
     })
     .filter((item) => !_.isNaN(item.cluster))
@@ -62,15 +65,40 @@ function getClusterItems({ numberOfClusters, allClusters }) {
   return clusterItemsObj
 }
 
-function generateMapFeatures({ mapFeatures, clusterItems, clusters }) {
-  function addFeatureProps(feature) {
+function generateMapFeatures({
+  mapFeatures,
+  clusterItems,
+  clusters,
+  enabledHabitats,
+}) {
+  function checkHabitatPresence(item) {
+    const habitatKey = {
+      mg: 'mang_presence',
+      sm: 'salt_presence',
+      sg: 'seag_presence',
+    }
+    const hasHabitatPresence = _.some(
+      enabledHabitats,
+      (key) => item[habitatKey[key]] === 1
+    )
+    return hasHabitatPresence
+  }
+
+  function addFeatureProps(allFeatures, feature) {
     // Add cluster item props to feature
     const matchingClusterItem = clusterItems?.[feature.properties.ID]
+
+    // Filter out if no habitat presence
+    const hasHabitatPresence = checkHabitatPresence(matchingClusterItem)
+    if (!hasHabitatPresence) {
+      return allFeatures
+    }
+
     const cluster = clusters.find(({ n }) => n === matchingClusterItem?.cluster)
 
     const { color, fillColor, n } = cluster
 
-    return {
+    allFeatures.push({
       ...feature,
       properties: {
         ...feature.properties,
@@ -79,10 +107,11 @@ function generateMapFeatures({ mapFeatures, clusterItems, clusters }) {
         fillColor,
         value: n,
       },
-    }
+    })
+    return allFeatures
   }
 
-  return mapFeatures.map(addFeatureProps)
+  return mapFeatures.reduce(addFeatureProps, [])
 }
 
 function generateClusters({ clusterItems }) {
@@ -102,6 +131,9 @@ function generateClusters({ clusterItems }) {
 export function useMapData() {
   const numberOfClusters = useSelector(
     (state) => state.globalSettings.numberOfClusters
+  )
+  const enabledHabitats = useSelector(
+    (state) => state.globalSettings.enabledHabitats
   )
   const { data: gridGeojson } = useSWR(
     `${process.env.PUBLIC_URL}/data/grid.geojson`,
@@ -170,6 +202,7 @@ export function useMapData() {
         clusterItems,
         clusters,
         mapFeatures: gridGeojson?.features,
+        enabledHabitats,
       })
 
       console.timeEnd('generateMapFeatures')
@@ -177,7 +210,7 @@ export function useMapData() {
     } else {
       return []
     }
-  }, [clusterItems, clusters, gridGeojson?.features])
+  }, [clusterItems, clusters, gridGeojson?.features, enabledHabitats])
 
   const gridLayerStyle = useMemo(() => {
     const gridLayerStyle = generateGridLayerStyle({
