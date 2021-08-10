@@ -19,11 +19,21 @@ export function SliderInput({ value, onChange, debounceMs = 0, ...props }) {
     [val]
   )
 
+  function handleMouseDown() {
+    document.body.dataset.dragging = true
+  }
+
+  function handleMouseUp() {
+    document.body.dataset.dragging = false
+  }
+
   return (
     <Slider
       className={styles.SliderInput}
       value={val}
       onChange={(value) => setVal(value)}
+      onMouseDown={handleMouseDown}
+      onMouseUp={handleMouseUp}
       {...props}
     />
   )

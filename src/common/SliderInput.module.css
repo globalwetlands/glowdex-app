@@ -18,3 +18,7 @@
   background-color: var(--color-background);
   border: 2px solid var(--color);
 }
+
+:global(body[data-dragging='true']) {
+  user-select: none;
+}
