@@ -17,7 +17,6 @@ import {
 } from '@reduxjs/toolkit'
 
 import globalSettingsSlice from './globalSettingsSlice'
-import gridItemsSlice from './gridItemsSlice'
 
 const createPersistedReducer = ({ key, reducer, config = {} }) => {
   const persistConfig = {
@@ -34,8 +33,12 @@ const rootReducer = combineReducers({
   globalSettings: createPersistedReducer({
     reducer: globalSettingsSlice,
     key: 'globalSettings',
+    whitelist: [
+      'numberOfClusters',
+      'typologyBoxPlotQuantile',
+      'enabledHabitats',
+    ],
   }),
-  gridItems: gridItemsSlice,
 })
 
 export const store = configureStore({

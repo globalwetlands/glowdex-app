@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import bbox from '@turf/bbox'
 
 import { Spinner } from '../../common/Spinner'
-import { setSelectedGridItems } from '../../redux/gridItemsSlice'
+import { setSelectedGridItems } from '../../redux/globalSettingsSlice'
 import { getBboxCenter } from '../../utils/mapUtils'
 import { delay } from '../../utils/utils'
 import {
@@ -30,7 +30,7 @@ export function Map({ mapFeatures, gridItems, clusters, isLoading }) {
 
   const dispatch = useDispatch()
   const selectedGridItems = useSelector(
-    (state) => state.gridItems.selectedGridItems
+    (state) => state.globalSettings.selectedGridItems
   )
 
   const [viewport, setViewport] = useState({

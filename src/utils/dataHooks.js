@@ -248,7 +248,7 @@ export function useSelectedGridItemData({ gridItems, mapFeatures }) {
   // Returns the selected grid item data
 
   const selectedGridItems = useSelector(
-    (state) => state.gridItems.selectedGridItems
+    (state) => state.globalSettings.selectedGridItems
   )
 
   const selectedGridItemData = useMemo(() => {

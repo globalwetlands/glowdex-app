@@ -6,6 +6,7 @@ export const availableNumberClusters = [5, 18]
 
 const initialState = {
   showMenuHelpText: true,
+  selectedGridItems: [],
   numberOfClusters: 5,
   typologyBoxPlotQuantile: 0.8,
   enabledHabitats: ['mg', 'sm', 'sg'],
@@ -17,6 +18,9 @@ const globalSettingsSlice = createSlice({
   reducers: {
     hideMenuHelpText: (state) => {
       state.showMenuHelpText = false
+    },
+    setSelectedGridItems: (state, action) => {
+      state.selectedGridItems = action.payload
     },
     setNumberOfClusters: (state, action) => {
       const number = action.payload
@@ -42,6 +46,7 @@ export const {
   setNumberOfClusters,
   setTypologyBoxPlotQuantile,
   toggleEnabledHabitat,
+  setSelectedGridItems,
 } = globalSettingsSlice.actions
 
 export default globalSettingsSlice.reducer
