@@ -5,7 +5,8 @@ import useSWR from 'swr'
 
 import bbox from '@turf/bbox'
 
-import { getBrewerColors } from './colorUtils'
+import { availableNumberClusters } from '../redux/globalSettingsSlice'
+import { opacify } from './colorUtils'
 import { fetcher, fetcherCsv } from './dataUtils'
 import { getBboxCenter } from './mapUtils'
 
@@ -40,18 +41,24 @@ export function generateGridLayerStyle({ clusters }) {
 }
 
 function getClusterItems({ numberOfClusters, allClusters }) {
+  if (!availableNumberClusters.includes(numberOfClusters)) {
+    // set default number of clusters
+    numberOfClusters = availableNumberClusters[0]
+  }
   // change cluster data types to Integers
-  const groupedByClusterN = _.groupBy(allClusters, 'nclust')
-  const clusterItems = groupedByClusterN?.[numberOfClusters]?.map(
-    ({ ID, Cluster, nclust }) => ({
-      ID: parseInt(ID),
-      cluster: parseInt(Cluster),
-      nclust: parseInt(nclust),
+  const clusterCol = `cluster_${numberOfClusters}`
+  const colorCol = `hex_${numberOfClusters}`
+  const clusterItems = allClusters
+    ?.map((item) => {
+      return {
+        ID: parseInt(item.ID, 10),
+        cluster: parseInt(item?.[clusterCol], 10),
+        color: item?.[colorCol],
+      }
     })
-  )
+    .filter((item) => !_.isNaN(item.cluster))
 
   const clusterItemsObj = _.keyBy(clusterItems, 'ID')
-
   return clusterItemsObj
 }
 
@@ -78,14 +85,15 @@ function generateMapFeatures({ mapFeatures, clusterItems, clusters }) {
   return mapFeatures.map(addFeatureProps)
 }
 
-function generateClusters({ numberOfClusters }) {
-  const colors = getBrewerColors()
-  const fillColors = getBrewerColors({ alpha: 0.4 })
-
-  const clusters = _.range(1, numberOfClusters + 1).map((n) => {
-    const color = colors[(n - 1) % colors.length]
-    const fillColor = fillColors[(n - 1) % colors.length]
-    return { n, color, fillColor }
+function generateClusters({ clusterItems }) {
+  const clusterItemsArr = clusterItems ? Object.values(clusterItems) : []
+  const uniqClusters = _.chain(clusterItemsArr)
+    .uniqBy('cluster')
+    .sortBy('cluster')
+    .value()
+  const clusters = uniqClusters.map(({ cluster, color }) => {
+    const fillColor = opacify({ color, alpha: 0.3 })
+    return { n: cluster, color, fillColor }
   })
 
   return clusters
@@ -133,11 +141,6 @@ export function useMapData() {
     [allClusters, gridGeojson]
   )
 
-  const clusters = useMemo(
-    () => generateClusters({ numberOfClusters }),
-    [numberOfClusters]
-  )
-
   const clusterItems = useMemo(() => {
     if (allClusters?.length) {
       console.time('getClusterItems')
@@ -150,8 +153,17 @@ export function useMapData() {
     }
   }, [allClusters, numberOfClusters])
 
+  const clusters = useMemo(
+    () => generateClusters({ clusterItems }),
+    [clusterItems]
+  )
+
   const mapFeatures = useMemo(() => {
-    if (gridGeojson?.features && !_.isEmpty(clusterItems)) {
+    if (
+      gridGeojson?.features &&
+      !_.isEmpty(clusterItems) &&
+      !_.isEmpty(clusters)
+    ) {
       console.time('generateMapFeatures')
 
       const mapFeatures = generateMapFeatures({

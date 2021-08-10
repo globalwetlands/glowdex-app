@@ -2,6 +2,8 @@ import _ from 'lodash'
 
 import { createSlice } from '@reduxjs/toolkit'
 
+export const availableNumberClusters = [5, 18]
+
 const initialState = {
   showMenuHelpText: true,
   numberOfClusters: 5,
@@ -17,7 +19,10 @@ const globalSettingsSlice = createSlice({
       state.showMenuHelpText = false
     },
     setNumberOfClusters: (state, action) => {
-      state.numberOfClusters = action.payload
+      const number = action.payload
+      if (availableNumberClusters.includes(number)) {
+        state.numberOfClusters = number
+      }
     },
     setTypologyBoxPlotQuantile: (state, action) => {
       state.typologyBoxPlotQuantile = action.payload
