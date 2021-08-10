@@ -2,7 +2,6 @@ import './MapLegend.css'
 
 import { useDispatch, useSelector } from 'react-redux'
 
-import { SliderInput } from '../../common/SliderInput'
 import {
   setNumberOfClusters,
   toggleEnabledHabitat,
@@ -42,20 +41,33 @@ export function MapLegend({ clusters }) {
   return (
     <div className="MapLegend">
       <fieldset className="field" style={{ maxWidth: 330 }}>
-        <label className="label" style={{ marginBottom: 18 }}>
-          Number of Typologies: <span className="tag">{numberOfClusters}</span>
-        </label>
+        <label className="label">Number of Typologies</label>
+
         <div className="control">
-          <SliderInput
-            min={2}
-            max={10}
-            step={1}
-            value={numberOfClusters}
-            onChange={(value) => {
-              dispatch(setNumberOfClusters(value))
-            }}
-            aria-label="Number of Clusters"
-          />
+          <label className="radio">
+            <input
+              type="radio"
+              name="number_typologies"
+              checked={numberOfClusters === 5}
+              aria-label={`Number of typologies: ${5}`}
+              onChange={() => {
+                dispatch(setNumberOfClusters(5))
+              }}
+            />
+            5
+          </label>
+          <label className="radio">
+            <input
+              type="radio"
+              name="number_typologies"
+              checked={numberOfClusters === 18}
+              aria-label={`Number of typologies: ${18}`}
+              onChange={() => {
+                dispatch(setNumberOfClusters(18))
+              }}
+            />
+            18
+          </label>
         </div>
       </fieldset>
 

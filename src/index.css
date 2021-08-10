@@ -94,6 +94,7 @@ a {
   transform: scale(0.97);
 }
 
-.checkbox input[type='checkbox'] {
+.checkbox input[type='checkbox'],
+.radio input[type='radio'] {
   margin-right: 0.3em;
 }
