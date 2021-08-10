@@ -199,7 +199,8 @@ function useTypologyPlotData({
       }
 
       const rowHeight = 40
-      const height = indicatorColumns.length * rowHeight
+      const paddingHeight = 25
+      const height = indicatorColumns.length * rowHeight + paddingHeight
 
       const calculatedLayout = {
         ...layout,
