@@ -65,6 +65,11 @@ abbr[title] {
 
 a {
   color: inherit;
+  text-decoration: underline;
+}
+
+.content [id] {
+  scroll-margin-top: 25px;
 }
 
 .button {

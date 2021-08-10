@@ -8,12 +8,8 @@ import { IconButton } from './IconButton'
 // Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement(`body`)
 
-export function Popup({ title, modalIsOpen, setModalIsOpen, children }) {
+export function Popup({ title, modalIsOpen, closeModal, children }) {
   function afterOpenModal() {}
-
-  function closeModal() {
-    setModalIsOpen(false)
-  }
 
   return (
     <Modal
