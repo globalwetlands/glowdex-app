@@ -175,12 +175,10 @@ export function useMapData() {
 
   const clusterItems = useMemo(() => {
     if (allClusters?.length) {
-      console.time('getClusterItems')
       const clusterItems = getClusterItems({
         numberOfClusters,
         allClusters,
       })
-      console.timeEnd('getClusterItems')
       return clusterItems
     }
   }, [allClusters, numberOfClusters])
@@ -196,8 +194,6 @@ export function useMapData() {
       !_.isEmpty(clusterItems) &&
       !_.isEmpty(clusters)
     ) {
-      console.time('generateMapFeatures')
-
       const mapFeatures = generateMapFeatures({
         clusterItems,
         clusters,
@@ -205,7 +201,6 @@ export function useMapData() {
         enabledHabitats,
       })
 
-      console.timeEnd('generateMapFeatures')
       return mapFeatures
     } else {
       return []
@@ -221,11 +216,9 @@ export function useMapData() {
 
   const gridItemsPerCluster = useMemo(() => {
     if (gridItems && clusterItems) {
-      console.time('gridItemsPerCluster')
       const gridItemsPerCluster = _.groupBy(gridItems, ({ ID }) => {
         return clusterItems?.[parseInt(ID)]?.cluster
       })
-      console.timeEnd('gridItemsPerCluster')
       return gridItemsPerCluster
     } else {
       return undefined
