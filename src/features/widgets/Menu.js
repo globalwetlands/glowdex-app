@@ -15,48 +15,50 @@ const MenuPopupContent = () => (
 
     <h3 id="about">About</h3>
     <h4 id="global-typologies-of-coastal-wetland-status-to-inform-conservation-and-management-">
-      Global typologies of coastal wetland status to inform conservation and
+      Global typologies of coastal wetlands status to inform conservation and
       management.
     </h4>
     <p>
       Researchers from all around the world have been recording a wide range of
       data on the world’s coastal wetlands for decades. For the first time we
       have brought these global data sets together. We have analysed this data
-      and can now see how our wetlands are faring and where they may be in
-      trouble.
+      and can now see how our coastal wetlands are faring and where they may be
+      in trouble.
     </p>
     <p>
-      We have created a Global Coastal Wetlands Index that you can access in an
-      app. Our index uses 34 indicators, to provide a full picture of the health
-      of our coastal wetlands. We have quantified the relationships among these
-      indicators to be able to better understand the health of our wetlands.
+      We have created a Global Coastal Wetlands Index that you can access using
+      this web app. Our index uses 34 indicators, to provide a full picture of
+      the health of our coastal wetlands. We have quantified the relationships
+      among these indicators to be able to better understand the health of our
+      coastal wetlands.
     </p>
     <p>
-      When we look around the world, we start to find similarities in wetlands
-      located in different regions. Wetland sites that share these similar
-      characteristics have been grouped together into what we call a ‘typology’.
-      This web app is designed to help you explore outputs at two scales for
-      different end users: 5 and 18 typologies.
+      When we look around the world, we start to find similarities in coastal
+      wetlands located in different regions. Coastal wetland sites that share
+      these similar characteristics have been grouped together into what we call
+      a ‘typology’. This web app is designed to help you explore outputs at two
+      scales: either using 5 or 18 typologies to characterise the world’s
+      coastal wetlands.
     </p>
     <p>
-      You can use the app to see which typology your areas of interest fall into
-      and identify the defining characteristics of that typology. For instance,
-      your typology might have typically high climate-based pressures and high
-      rates of seagrass loss. Sites within the same typology facing similar
-      issues could benefit from knowledge exchange. Our tools thus help set the
-      scene for globally and regionally coordinated conservation and management.
+      You can use the web app to see which typology your areas of interest fall
+      into and identify the defining characteristics of that typology. For
+      instance, your typology might have typically high climate-based pressures
+      and high rates of seagrass loss. Sites within the same typology facing
+      similar issues could benefit from knowledge exchange. This Index can
+      inform globally and regionally coordinated conservation and management.
     </p>
 
     <figure style={{ width: '100%', maxWidth: 550 }}>
       <img src={fig1} alt="Figure 1" width={1488} height={1334} />
       <figcaption>
         Figure 1: Flow diagram of the nine key methodological steps used to map
-        and diagnose spatially explicit typologies of coastal wetland ecosystem
-        condition applicable at a global scale.
+        and diagnose spatially explicit typologies of coastal wetlands ecosystem
+        conditionstatus applicable at a global scale.
       </figcaption>
     </figure>
 
-    <p>The app uses data from the following publications:</p>
+    <p>This web app uses data from the following publications:</p>
     <ul>
       <li>Sievers et al. (in review)</li>
       <li>
@@ -243,7 +245,7 @@ const MenuPopupContent = () => (
     <p>
       <strong>
         Please cite Sievers et al. <em>(in review) Ecological Indicators</em> if
-        you use output from this app.
+        you use outputs from this web app.
       </strong>{' '}
       See the individual publications above for details or data on specific
       indicators.
@@ -252,24 +254,46 @@ const MenuPopupContent = () => (
     <h3 id="instructions">Instructions</h3>
     <p>
       Select the <strong>number of typologies</strong> you would like to view (5
-      or 18). Click on a cell (100 x 100 km grid cell) to view information about
-      the typology that cell belongs to. The <strong>violin plot</strong> shows
-      the spread of values for cells within that typology for the indicators
-      that best diagnose and differentiate that typology. The diamond highlights
-      the specific cell you’ve clicked on.
+      or 18). Click on a grid cell (100 x 100 km grid cell) to view information
+      about the typology that cell belongs to. The <strong>violin plot</strong>{' '}
+      shows the spread of values for the range of the grid cells within that
+      typology, displaying indicators that best diagnose and differentiate that
+      typology. The diamond highlights the specific grid cell you’ve clicked on
+      position within the range.
     </p>
     <p>
-      You can alter the <strong>quantile</strong> to change the threshold for
-      inclusion of an indicator in the violin plot. The higher the quantile is
-      set, the more important the indicator has to be in diagnosing a typology
-      for you to see it.
+      You can alter the <strong>quantile</strong> between 0 and 0.99 to change
+      the threshold for inclusion of an indicator in the violin plot. The higher
+      the quantile is set, the fewer indicators are shown. The more important
+      the indicator in diagnosing the typology, the longer it will remain
+      visible as you increase the quantile.
+    </p>
+    <p>
+      Occasionally, there will be no indicators shown for higher thresholds (or
+      quantiles). This is because there are no clear defining characteristic for
+      this typology.
+    </p>
+    <p>
+      You can select the type of coastal wetland habitat/s you would like to
+      view -mangrove, saltmarsh, and seagrass. You can select one, two or all
+      three habitats. The world map will only show grid cells where the
+      habitat/s you selected are located.
     </p>
 
     <h3 id="terminology">Terminology</h3>
     <p>
-      <strong>Typologies</strong> – Groups of coastal wetland sites that share
-      similar indicator values (that fall under 'habitat extent change',
-      'ecological structure and function', or 'cumulative impacts')
+      <strong>Indicator</strong> – A measure or metric based on verifiable data
+      that conveys information about more than itself; 34 indicators are used in
+      this Index.
+    </p>
+    <p>
+      <strong>Habitat</strong> – The three coastal wetland ecosystem types in
+      our Index: mangroves, saltmarsh and seagrass.
+    </p>
+    <p>
+      <strong>Typology</strong> – A group of coastal wetland sites that share
+      similar indicator values (that fall under three categories 'habitat extent
+      change', 'ecological structure and function', or 'cumulative impacts').
     </p>
     <p>
       <strong>Quantile</strong> – The threshold for inclusion of indicators in
@@ -279,11 +303,11 @@ const MenuPopupContent = () => (
     <p>
       <strong>Violin plot</strong> – Violin plots show the distribution of data;
       all indicator values within the selected typology are shown, where thicker
-      sections of the violin indicate more cells with that indicator value.
+      sections of the violin indicate more grid cells with that indicator value.
     </p>
     <p>
-      <strong>ID</strong> – The cell ID number; each of the 2,845 cells are
-      given a unique number.
+      <strong>ID</strong> – The grid cell ID number; each of the 2,845 grid
+      cells are given a unique number.
     </p>
 
     <h3 id="license">MIT License</h3>

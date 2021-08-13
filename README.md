@@ -2,7 +2,7 @@
 
 ![GitHub License](https://img.shields.io/github/license/globalwetlands/glowdex-app)
 
-View the app: **[glowdex.wetlands.app](https://glowdex.wetlands.app)**
+View the web app: **[glowdex.wetlands.app](https://glowdex.wetlands.app)**
 
 [About](#about) | [Instructions](#instructions) | [Development](#development) | [License](LICENSE)
 
@@ -14,11 +14,11 @@ Researchers from all around the world have been recording a wide range of data o
 
 We have created a Global Coastal Wetlands Index that you can access using this web app. Our index uses 34 indicators, to provide a full picture of the health of our coastal wetlands. We have quantified the relationships among these indicators to be able to better understand the health of our coastal wetlands.
 
-When we look around the world, we start to find similarities in coastal wetlands located in different regions. Coastal wetland sites that share these similar characteristics have been grouped together into what we call a ‘typology’. This web app is designed to help you explore outputs at two scales: wither using 5 or 18 typologies to characterise the world's coastal wetlands.
+When we look around the world, we start to find similarities in coastal wetlands located in different regions. Coastal wetland sites that share these similar characteristics have been grouped together into what we call a ‘typology’. This web app is designed to help you explore outputs at two scales: either using 5 or 18 typologies to characterise the world’s coastal wetlands.
 
-You can use the web app to see which typology your areas of interest fall into and identify the defining characteristics of that typology. For instance, your typology might have typically high climate-based pressures and high rates of seagrass loss. Sites within the same typology facing similar issues could benefit from knowledge exchange. This index can inform globally and regionally coordinated conservation and management.
+You can use the web app to see which typology your areas of interest fall into and identify the defining characteristics of that typology. For instance, your typology might have typically high climate-based pressures and high rates of seagrass loss. Sites within the same typology facing similar issues could benefit from knowledge exchange. This Index can inform globally and regionally coordinated conservation and management.
 
-The app uses data from the following publications:
+This web app uses data from the following publications:
 
 - Sievers et al. (in review)
 - [Bunting et al. 2018](https://www.mdpi.com/2072-4292/10/10/1669)
@@ -42,9 +42,9 @@ The app uses data from the following publications:
 
 ## Instructions
 
-Select the **number of typologies** you would like to view (5 or 18). Click on a grid cell (100 x 100 km grid cell) to view information about the typology that cell belongs to. The **violin plot** shows the spread of values for the range of the grid cells within that typology, displaying  for the indicators that best diagnose and differentiate that typology. The diamond highlights the specific grid cell you’ve clicked on position within the range.
+Select the **number of typologies** you would like to view (5 or 18). Click on a grid cell (100 x 100 km grid cell) to view information about the typology that cell belongs to. The **violin plot** shows the spread of values for the range of the grid cells within that typology, displaying indicators that best diagnose and differentiate that typology. The diamond highlights the specific grid cell you’ve clicked on position within the range.
 
-You can alter the **quantile** between 0 and 0.99 to change the threshold for inclusion of an indicator in the violin plot. The higher the quantile is set, the more important the indicator has to be in diagnosing a typology for you to see it.fewer indicators are shown. The more important the indicator in diagnosing the typology, the longer it will remain visible as you increase the quantile.
+You can alter the **quantile** between 0 and 0.99 to change the threshold for inclusion of an indicator in the violin plot. The higher the quantile is set, the fewer indicators are shown. The more important the indicator in diagnosing the typology, the longer it will remain visible as you increase the quantile.
 
 Occasionally, there will be no indicators shown for higher thresholds (or quantiles). This is because there are no clear defining characteristic for this typology.
 
