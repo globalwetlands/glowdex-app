@@ -8,7 +8,7 @@ View the web app: **[glowdex.wetlands.app](https://glowdex.wetlands.app)**
 
 ## About
 
-### Global typologies of coastal wetlands status to inform conservation and management.
+### Global status of coastal wetlands to inform conservation and management.
 
 Researchers from all around the world have been recording a wide range of data on the world’s coastal wetlands for decades. For the first time we have brought these global data sets together. We have analysed this data and can now see how our coastal wetlands are faring and where they may be in trouble.
 

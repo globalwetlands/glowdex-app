@@ -15,8 +15,7 @@ const MenuPopupContent = () => (
 
     <h3 id="about">About</h3>
     <h4 id="global-typologies-of-coastal-wetland-status-to-inform-conservation-and-management-">
-      Global typologies of coastal wetlands status to inform conservation and
-      management.
+      Global status of coastal wetlands to inform conservation and management.
     </h4>
     <p>
       Researchers from all around the world have been recording a wide range of
