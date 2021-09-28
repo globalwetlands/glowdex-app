@@ -75,7 +75,10 @@ function TypologyBoxPlotQuantileInput() {
   )
   return (
     <fieldset className="field" style={{ maxWidth: 300 }}>
-      <label className="label" style={{ marginBottom: 18 }}>
+      <label
+        className="label"
+        style={{ marginBottom: 18, whiteSpace: 'nowrap' }}
+      >
         Quantile for Typology Violin Plot:{' '}
         <span className="tag">{typologyBoxPlotQuantile}</span>
       </label>
